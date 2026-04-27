@@ -494,6 +494,50 @@ body{
   50%{opacity:.25;transform:scale(1.08)}
 }
 
+/* Manual presentation mode button — for live presenting.
+   Centered below the folder, clean readable sans-serif. */
+.manual-mode-btn{
+  position:absolute;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 22px;
+  background:rgba(20,12,8,.4);
+  border:1px solid rgba(122,86,24,.5);
+  border-radius:6px;
+  color:#e8c878;
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.5px;
+  cursor:pointer;
+  z-index:6;
+  opacity:0;
+  transition:background .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease;
+  animation:fadeIn 1.2s 5.2s forwards;
+  white-space:nowrap;
+}
+.manual-mode-btn:hover{
+  background:rgba(168,37,37,.18);
+  border-color:var(--red-stamp);
+  color:#fff;
+  transform:translateX(-50%) translateY(-2px);
+  box-shadow:0 4px 14px rgba(168,37,37,.25);
+}
+.mm-icon{
+  font-size:14px;
+  line-height:1;
+  color:var(--red-stamp);
+  transition:transform .25s ease, color .25s ease;
+}
+.manual-mode-btn:hover .mm-icon{transform:translateX(3px);color:#fff}
+@media (max-width:560px){
+  .manual-mode-btn{padding:9px 16px;font-size:12px}
+}
+
 /* ════════════════════════════════════════════════════════════
    GAVEL SLAM TRANSITION
    ═══════════════════════════════════════════════════════════ */
@@ -587,6 +631,17 @@ body{
   color:var(--gold);
   flex-shrink:0;
 }
+.stage-mode{
+  font-family:'Cinzel',serif;
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--red-stamp);
+  border:1px solid rgba(168,37,37,.45);
+  padding:3px 9px;
+  border-radius:3px;
+  flex-shrink:0;
+  background:rgba(168,37,37,.05);
+}
 .stage-title{
   flex:1;
   text-align:center;
@@ -627,6 +682,84 @@ body{
   transition:opacity .3s;
 }
 .stage-controls:hover{opacity:1}
+
+/* Center-bottom slide nav (Back / Counter / Next) */
+.stage-nav{
+  position:absolute;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px;
+  background:rgba(20,12,8,.55);
+  border:1px solid rgba(160,118,40,.35);
+  border-radius:10px;
+  backdrop-filter:blur(8px);
+  opacity:.6;
+  transition:opacity .3s;
+}
+.stage-nav:hover{opacity:1}
+.nav-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 18px;
+  background:rgba(168,118,40,.06);
+  border:1px solid rgba(160,118,40,.4);
+  border-radius:6px;
+  color:#e8c878;
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.5px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.nav-btn:hover{
+  background:rgba(168,37,37,.18);
+  border-color:var(--red-stamp);
+  color:#fff;
+  transform:translateY(-1px);
+}
+.nav-btn:disabled{
+  opacity:.3;
+  cursor:not-allowed;
+  transform:none;
+}
+.nav-btn:disabled:hover{
+  background:rgba(168,118,40,.06);
+  border-color:rgba(160,118,40,.4);
+  color:#e8c878;
+}
+.nav-arrow{
+  font-size:11px;
+  line-height:1;
+  color:var(--red-stamp);
+  transition:transform .2s ease, color .2s ease;
+}
+.nav-btn:hover .nav-arrow{color:#fff}
+.nav-btn:disabled:hover .nav-arrow{color:var(--red-stamp)}
+#navNext:hover .nav-arrow{transform:translateX(3px)}
+#navBack:hover .nav-arrow{transform:translateX(-3px)}
+.nav-counter{
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:1.5px;
+  color:rgba(232,200,120,.7);
+  padding:0 12px;
+  min-width:60px;
+  text-align:center;
+  white-space:nowrap;
+}
+@media (max-width:560px){
+  .nav-btn{padding:9px 14px;font-size:12px}
+  .nav-btn .nav-label{display:none}
+  .stage-nav{padding:5px;gap:4px}
+}
 .stage-btn{
   padding:8px 14px;
   background:rgba(20,12,8,.7);
@@ -1097,6 +1230,29 @@ body{
 @keyframes slideInLeft{to{opacity:1;transform:translateX(0)}}
 
 /* ════════════════════════════════════════════════════════════
+   MANUAL MODE OVERRIDES
+   When body has .manual-mode class, swap the gothic blackletter
+   slide titles to readable Cinzel so the audience can actually
+   read them while the presenter speaks.
+   ═══════════════════════════════════════════════════════════ */
+body.manual-mode .slide-hero-h,
+body.manual-mode .slide-charges-h,
+body.manual-mode .slide-context-h,
+body.manual-mode .evidence-h,
+body.manual-mode .slide-counter-h,
+body.manual-mode .verdict-finds,
+body.manual-mode .slide-end-h,
+body.manual-mode .stage-title{
+  font-family:'Cinzel',serif !important;
+  font-weight:700 !important;
+  letter-spacing:1.5px !important;
+}
+/* Also lighten text-shadow so it doesn't fuzz the cleaner font */
+body.manual-mode .slide-hero-h{
+  text-shadow:0 0 30px rgba(232,200,120,.2), 1px 1px 0 rgba(0,0,0,.4) !important;
+}
+
+/* ════════════════════════════════════════════════════════════
    READ-ALONG WORD HIGHLIGHTING
    ═══════════════════════════════════════════════════════════ */
 .rd-word{
@@ -1229,6 +1385,12 @@ body{
       </svg>
     </div>
 
+    <!-- Manual presentation mode trigger -->
+    <button class="manual-mode-btn" id="manualModeBtn" title="Start trial in manual mode — no auto-narration, click to advance">
+      <span class="mm-icon">▷</span>
+      <span class="mm-label">Present Manually</span>
+    </button>
+
   </article>
 </div>
 
@@ -1251,6 +1413,7 @@ body{
 
   <div class="stage-bar">
     <div class="stage-case">CASE NO. 1818-VFM</div>
+    <div class="stage-mode" id="stageMode" style="display:none">◇ MANUAL</div>
     <div class="stage-title">The Trial of Victor Frankenstein</div>
     <div class="stage-progress" id="progress"></div>
   </div>
@@ -1409,6 +1572,19 @@ body{
     <button class="stage-btn" id="btnNarrate" title="Toggle narration">🔊 Voice</button>
     <button class="stage-btn" id="btnPause" title="Pause">⏸ Pause</button>
     <button class="stage-btn" id="btnExit" title="Exit">✕ Exit</button>
+  </div>
+
+  <!-- Center-bottom slide navigation -->
+  <div class="stage-nav" id="stageNav">
+    <button class="nav-btn" id="navBack" title="Previous slide" aria-label="Previous slide">
+      <span class="nav-arrow">◀</span>
+      <span class="nav-label">Back</span>
+    </button>
+    <div class="nav-counter" id="navCounter">1 / 12</div>
+    <button class="nav-btn" id="navNext" title="Next slide" aria-label="Next slide">
+      <span class="nav-label">Next</span>
+      <span class="nav-arrow">▶</span>
+    </button>
   </div>
 
 </div>
@@ -1658,6 +1834,7 @@ const SPEECH_POLL_MS = 250;
 
 let currentSlide = 0;
 let presentationActive = false;
+let manualMode = false;
 let advanceTimer = null;
 let speechPoll = null;
 let narrationOn = true;
@@ -1695,6 +1872,15 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* Manual Mode button — start trial without auto-narration or auto-advance.
+   Use this when YOU want to present and read aloud yourself. */
+$('#manualModeBtn').addEventListener('click', () => {
+  if (presentationActive) return;
+  manualMode = true;
+  narrationOn = false;
+  startTrial();
+});
+
 /* Stage controls */
 $('#btnNarrate').addEventListener('click', () => {
   narrationOn = !narrationOn;
@@ -1720,6 +1906,16 @@ $('#btnPause').addEventListener('click', () => {
 
 $('#btnExit').addEventListener('click', () => endTrial());
 
+/* Center-bottom Next/Back navigation buttons */
+$('#navBack').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (presentationActive) prev();
+});
+$('#navNext').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (presentationActive) next();
+});
+
 document.addEventListener('keydown', (e) => {
   if (!presentationActive) return;
   if (e.key === 'Escape') endTrial();
@@ -1730,6 +1926,7 @@ document.addEventListener('keydown', (e) => {
 /* Click anywhere on stage to advance */
 $('#stage').addEventListener('click', (e) => {
   if (e.target.closest('.stage-controls')) return;
+  if (e.target.closest('.stage-nav')) return;
   if (!presentationActive) return;
   if (currentSlide < slides.length - 1) next();
 });
@@ -1737,8 +1934,23 @@ $('#stage').addEventListener('click', (e) => {
 /* ─── Trial start/end ─── */
 function startTrial() {
   presentationActive = true;
-  $('#btnNarrate').classList.add('active');
-  $('#btnNarrate').textContent = '🔊 Voice On';
+
+  // Reflect narrationOn state on the Voice button
+  const bn = $('#btnNarrate');
+  if (narrationOn) {
+    bn.classList.add('active');
+    bn.textContent = '🔊 Voice On';
+  } else {
+    bn.classList.remove('active');
+    bn.textContent = '🔇 Voice Off';
+  }
+
+  // Show MANUAL badge if in manual mode
+  const sm = $('#stageMode');
+  if (sm) sm.style.display = manualMode ? 'block' : 'none';
+
+  // Toggle manual-mode class for cleaner readable fonts
+  document.body.classList.toggle('manual-mode', manualMode);
 
   $('#transition').classList.add('show');
 
@@ -1753,17 +1965,28 @@ function startTrial() {
 
 function endTrial() {
   presentationActive = false;
+  manualMode = false;
+  narrationOn = true;
+  paused = false;
   clearTimeout(advanceTimer);
   clearInterval(speechPoll);
   speechSynthesis.cancel();
   $('#stage').classList.remove('active');
   $('#facade').classList.remove('hidden');
+  document.body.classList.remove('manual-mode');
+  const sm = $('#stageMode');
+  if (sm) sm.style.display = 'none';
   slides.forEach(s => {
     s.classList.remove('active');
     resetSlideHighlights(s);
   });
   dots.forEach(d => d.classList.remove('active', 'passed'));
   currentSlide = 0;
+  // Reset stage button labels
+  const bn = $('#btnNarrate');
+  if (bn) { bn.classList.add('active'); bn.textContent = '🔊 Voice On'; }
+  const bp = $('#btnPause');
+  if (bp) { bp.classList.remove('active'); bp.textContent = '⏸ Pause'; }
 }
 
 function showSlide(idx) {
@@ -1778,6 +2001,15 @@ function showSlide(idx) {
   });
 
   currentSlide = idx;
+
+  // Update Next/Back nav state + counter
+  const counter = $('#navCounter');
+  if (counter) counter.textContent = (idx + 1) + ' / ' + slides.length;
+  const back = $('#navBack');
+  const nxt = $('#navNext');
+  if (back) back.disabled = (idx === 0);
+  if (nxt) nxt.disabled = (idx === slides.length - 1);
+
   // Delay narration so slide entrance animations get a moment first
   setTimeout(() => {
     if (currentSlide === idx && presentationActive) narrateCurrent();
@@ -1797,6 +2029,7 @@ function scheduleNextAdvance() {
   clearTimeout(advanceTimer);
   clearInterval(speechPoll);
   if (paused) return;
+  if (manualMode) return;  // manual mode: never auto-advance
   if (currentSlide >= slides.length - 1) return;
 
   const slideStartedAt = Date.now();
