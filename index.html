@@ -842,11 +842,36 @@ body{
   color:#e8c878;
   border-left:3px solid var(--red-stamp);
   padding:16px 0 16px 24px;
-  margin-bottom:20px;
+  margin-bottom:8px;
   line-height:1.55;
   opacity:0;
 }
 .slide.active .evidence-quote{animation:fadeInUp 1s 1.1s forwards}
+
+/* Speaker attribution next to each quote — visible but NOT narrated */
+.quote-attribution{
+  font-family:'Cinzel',serif;
+  font-size:clamp(10px,1vw,12px);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:rgba(232,200,120,.55);
+  margin-bottom:20px;
+  padding-left:24px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  opacity:0;
+}
+.quote-attribution::before{
+  content:'—';
+  color:var(--red-stamp);
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:18px;
+  line-height:0;
+  position:relative;
+  top:1px;
+}
+.slide.active .quote-attribution{animation:fadeInUp 1s 1.3s forwards}
 .evidence-explanation{
   font-family:'Crimson Pro',serif;
   font-size:clamp(14px,1.4vw,18px);
@@ -941,13 +966,39 @@ body{
   color:#e8c878;
   border-left:3px solid var(--red-stamp);
   padding:14px 0 14px 22px;
-  margin:14px auto;
+  margin:14px auto 6px;
   max-width:880px;
   text-align:left;
   line-height:1.5;
   opacity:0;
 }
 .slide.active .slide-close-quote{animation:fadeInUp 1.2s 1s forwards}
+
+.close-attribution{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:rgba(232,200,120,.55);
+  max-width:880px;
+  margin:0 auto 18px;
+  padding-left:22px;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  opacity:0;
+}
+.close-attribution::before{
+  content:'—';
+  color:var(--red-stamp);
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:18px;
+  line-height:0;
+  position:relative;
+  top:1px;
+}
+.slide.active .close-attribution{animation:fadeInUp 1.2s 1.2s forwards}
 
 /* VERDICT slide */
 .slide-verdict{align-items:center;justify-content:center;text-align:center}
@@ -1242,6 +1293,7 @@ body{
         <div class="evidence-chapter">CHAPTER 5</div>
         <h3 class="evidence-h">Victor abandons his creation.</h3>
         <blockquote class="evidence-quote">The beauty of the dream vanished, and breathless horror and disgust filled my heart.</blockquote>
+        <div class="quote-attribution">Victor Frankenstein</div>
         <p class="evidence-explanation">Victor abandons the Creature the moment it comes to life. Instead of guiding or helping it, he runs away. This shows he failed his responsibility as a creator immediately.</p>
       </div>
     </section>
@@ -1257,6 +1309,7 @@ body{
         <div class="evidence-chapter">CHAPTERS 11–13</div>
         <h3 class="evidence-h">The Creature is initially good.</h3>
         <blockquote class="evidence-quote">I was benevolent and good; misery made me a fiend.</blockquote>
+        <div class="quote-attribution">The Creature</div>
         <p class="evidence-explanation">The Creature learns kindness, language, and morality by observing others. He desires connection and is not born evil. This proves identity is shaped by experience.</p>
       </div>
     </section>
@@ -1272,6 +1325,7 @@ body{
         <div class="evidence-chapter">CHAPTERS 11–16</div>
         <h3 class="evidence-h">Society rejects the Creature.</h3>
         <blockquote class="evidence-quote">Felix darted forward, and struck me violently with a stick.</blockquote>
+        <div class="quote-attribution">The Creature</div>
         <p class="evidence-explanation">Even when the Creature approaches peacefully, he is met with violence. This repeated rejection causes isolation and emotional suffering, which drives his transformation.</p>
       </div>
     </section>
@@ -1287,6 +1341,7 @@ body{
         <div class="evidence-chapter">CHAPTER 20</div>
         <h3 class="evidence-h">Victor refuses responsibility again.</h3>
         <blockquote class="evidence-quote">Shall I create another like yourself?</blockquote>
+        <div class="quote-attribution">Victor Frankenstein</div>
         <p class="evidence-explanation">Victor has a second chance to fix his mistake by creating a companion, but he destroys it. He knowingly increases the Creature's suffering and again refuses responsibility, despite knowing the consequences.</p>
       </div>
     </section>
@@ -1302,6 +1357,7 @@ body{
         <div class="evidence-chapter">CONSEQUENCES</div>
         <h3 class="evidence-h">The results of Victor's actions.</h3>
         <blockquote class="evidence-quote">You are my creator, but I am your master; obey!</blockquote>
+        <div class="quote-attribution">The Creature</div>
         <p class="evidence-explanation">The Creature turns to violence after abandonment and rejection. The deaths of William, Clerval, and Elizabeth follow this pattern. This shows a clear chain of cause and effect, where Victor's actions directly lead to these outcomes.</p>
       </div>
     </section>
