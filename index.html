@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Trial of Victor Frankenstein</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Special+Elite&family=UnifrakturMaguntia&family=Crimson+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --paper:#f3e8d2;
+  --paper-edge:#d4c19a;
+  --paper-shadow:#a89261;
+  --ink:#1a1410;
+  --ink-faded:#3d2f24;
+  --ink-mid:#5a4636;
+  --red-stamp:#a82525;
+  --red-blood:#6e1818;
+  --gold:#a07628;
+  --gold-bright:#e8c878;
+  --black:#0a0807;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Crimson Pro',Georgia,serif;
+  background:#1a0e08;
+  color:var(--ink);
+  position:relative;
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOOT OVERLAY — typewriter "case opening"
+   ═══════════════════════════════════════════════════════════ */
+.boot{
+  position:fixed;
+  inset:0;
+  background:#0a0604;
+  z-index:50;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  pointer-events:none;
+  animation:bootFade 1.2s 2.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+.boot-seal{
+  width:72px;height:72px;
+  border-radius:50%;
+  border:2px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:42px;
+  color:var(--red-stamp);
+  opacity:0;
+  animation:fadeIn .6s .2s forwards;
+  box-shadow:0 0 30px rgba(232,200,120,.2);
+}
+.boot-line{
+  font-family:'Special Elite',monospace;
+  font-size:13px;
+  letter-spacing:3px;
+  color:var(--gold);
+  text-transform:uppercase;
+  overflow:hidden;
+  white-space:nowrap;
+  border-right:2px solid var(--gold);
+  width:0;
+}
+.boot-line.l1{animation:typewriter 1.2s steps(40) .2s forwards, caretBlink 1s step-end infinite}
+.boot-line.l2{animation:typewriter 1s steps(30) 1.5s forwards, caretBlink 1s step-end infinite}
+@keyframes typewriter{from{width:0}to{width:100%}}
+@keyframes caretBlink{50%{border-color:transparent}}
+@keyframes bootFade{to{opacity:0;visibility:hidden}}
+
+/* ════════════════════════════════════════════════════════════
+   FACADE — case file front. Fits on one screen.
+   ═══════════════════════════════════════════════════════════ */
+.facade{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  height:100svh;
+  padding:24px clamp(16px,3vw,60px);
+  background:
+    radial-gradient(ellipse at 25% 15%, rgba(232,200,120,.18) 0%, transparent 35%),
+    radial-gradient(ellipse at 75% 85%, rgba(168,37,37,.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(40,20,8,.4) 0%, rgba(10,6,4,1) 90%),
+    linear-gradient(135deg, #1a0e08 0%, #0a0604 50%, #1a0e08 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.facade.hidden{display:none}
+.facade::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(91deg, transparent 0, transparent 60px, rgba(40,20,8,.15) 60px, rgba(40,20,8,.15) 62px),
+    repeating-linear-gradient(-89deg, transparent 0, transparent 180px, rgba(40,20,8,.10) 180px, rgba(40,20,8,.10) 182px);
+  pointer-events:none;
+  opacity:.6;
+  z-index:1;
+}
+.facade::after{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 35%, transparent 30%, rgba(0,0,0,.6) 80%);
+  pointer-events:none;
+  z-index:2;
+  animation:candleFlicker 4.5s ease-in-out infinite;
+}
+@keyframes candleFlicker{
+  0%,100%{opacity:.85}
+  20%{opacity:.78}
+  35%{opacity:.92}
+  55%{opacity:.83}
+  72%{opacity:.88}
+}
+
+/* Floating embers */
+.embers{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.ember{
+  position:absolute;
+  width:3px;height:3px;
+  background:var(--gold-bright);
+  border-radius:50%;
+  opacity:0;
+  box-shadow:0 0 4px var(--gold-bright);
+  animation:emberRise linear infinite;
+}
+@keyframes emberRise{
+  0%{opacity:0;transform:translateY(0) translateX(0)}
+  10%{opacity:.7}
+  100%{opacity:0;transform:translateY(-110vh) translateX(var(--drift))}
+}
+
+/* Candles */
+.candle{
+  position:absolute;
+  width:12px;height:12px;
+  border-radius:50%;
+  background:radial-gradient(circle, #fff5cc 0%, var(--gold-bright) 30%, var(--gold) 80%);
+  box-shadow:
+    0 0 24px 8px rgba(232,200,120,.55),
+    0 0 60px 20px rgba(232,200,120,.22);
+  z-index:4;
+  animation:flameDance 1.8s ease-in-out infinite;
+}
+.candle.left{left:6%;top:20%}
+.candle.right{right:6%;top:24%;animation-delay:-.6s}
+@keyframes flameDance{
+  0%,100%{transform:scale(1)}
+  25%{transform:scale(1.05)}
+  50%{transform:scale(.95)}
+  75%{transform:scale(1.08)}
+}
+@media (max-width:900px){.candle{display:none}}
+
+.folder{
+  position:relative;
+  z-index:5;
+  width:100%;
+  max-width:920px;
+  max-height:calc(100vh - 48px);
+  max-height:calc(100svh - 48px);
+  background:var(--paper);
+  background-image:
+    radial-gradient(ellipse at 5% 5%, rgba(0,0,0,.08), transparent 60%),
+    radial-gradient(ellipse at 95% 95%, rgba(0,0,0,.10), transparent 50%),
+    repeating-linear-gradient(0deg, transparent 0, transparent 28px, rgba(168,146,97,.04) 28px, rgba(168,146,97,.04) 29px);
+  padding:30px clamp(22px,3.5vw,46px) 40px;
+  box-shadow:
+    0 4px 0 var(--paper-shadow),
+    0 24px 80px rgba(0,0,0,.85),
+    inset 0 0 80px rgba(168,146,97,.2);
+  border-radius:2px 2px 4px 4px;
+  display:flex;
+  flex-direction:column;
+  opacity:0;
+  transform:translateY(40px) rotate(-2deg) scale(.96);
+  animation:folderArrive 1.6s cubic-bezier(.22,1,.36,1) .3s forwards;
+}
+@keyframes folderArrive{
+  0%{opacity:0;transform:translateY(40px) rotate(-2deg) scale(.96);filter:blur(6px)}
+  100%{opacity:1;transform:translateY(0) rotate(-.4deg) scale(1);filter:blur(0)}
+}
+
+/* Manila tab */
+.folder::before{
+  content:'CASE NO. 1818-VFM';
+  position:absolute;
+  top:-26px;
+  left:60px;
+  width:200px;
+  padding:6px 18px;
+  background:var(--paper);
+  border-radius:6px 6px 0 0;
+  box-shadow:0 -8px 20px rgba(0,0,0,.3);
+  font-family:'Special Elite',monospace;
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--ink-faded);
+  text-align:center;
+  opacity:0;
+  animation:fadeInDown .8s 1s forwards;
+}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Confidential stamp */
+.stamp-confidential{
+  position:absolute;
+  top:32px;
+  right:36px;
+  padding:8px 18px;
+  border:3px solid var(--red-stamp);
+  color:var(--red-stamp);
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:14px;
+  letter-spacing:4px;
+  background:rgba(168,37,37,.03);
+  z-index:5;
+  opacity:0;
+  transform:rotate(20deg) scale(2);
+  animation:stampLand 1s cubic-bezier(.5,1.5,.5,1) 1.6s forwards;
+}
+@keyframes stampLand{
+  0%{opacity:0;transform:rotate(20deg) scale(2.5)}
+  60%{opacity:1;transform:rotate(6deg) scale(.92)}
+  100%{opacity:.9;transform:rotate(8deg) scale(1)}
+}
+
+.folder-header{
+  text-align:center;
+  margin-bottom:16px;
+  padding-bottom:12px;
+  border-bottom:2px double var(--ink-faded);
+}
+.folder-jurisdiction{
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:5px;
+  color:var(--ink-mid);
+  margin-bottom:8px;
+  opacity:0;
+  animation:fadeIn 1s 1.4s forwards;
+}
+.folder-jurisdiction span{color:var(--red-stamp)}
+.folder-title{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(28px,4.6vw,52px);
+  color:var(--ink);
+  line-height:.95;
+  margin-bottom:4px;
+  text-shadow:1px 1px 0 rgba(0,0,0,.1);
+  opacity:0;
+  animation:inkBleed 1.4s cubic-bezier(.22,1,.36,1) 1.7s forwards;
+}
+@keyframes inkBleed{
+  0%{opacity:0;filter:blur(12px);letter-spacing:.4em}
+  60%{opacity:1;filter:blur(0)}
+  100%{opacity:1;filter:blur(0);letter-spacing:0}
+}
+.folder-vs{
+  display:inline-block;
+  padding:3px 12px;
+  margin:4px 0;
+  border:2px solid var(--ink);
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:11px;
+  letter-spacing:5px;
+  opacity:0;
+  animation:fadeIn 1s 2.2s forwards;
+}
+.folder-subtitle{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:4px;
+  color:var(--ink-faded);
+  margin-top:6px;
+  opacity:0;
+  animation:fadeIn 1s 2.4s forwards;
+}
+
+.case-meta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px 24px;
+  margin-bottom:16px;
+  font-family:'Special Elite',monospace;
+  font-size:11px;
+  color:var(--ink-faded);
+  line-height:1.5;
+}
+.case-meta-row{
+  display:flex;gap:8px;
+  border-bottom:1px dotted var(--ink-mid);
+  padding-bottom:4px;
+  opacity:0;
+  animation:fadeInUp .6s cubic-bezier(.22,1,.36,1) forwards;
+}
+.case-meta-row:nth-child(1){animation-delay:2.6s}
+.case-meta-row:nth-child(2){animation-delay:2.7s}
+.case-meta-row:nth-child(3){animation-delay:2.8s}
+.case-meta-row:nth-child(4){animation-delay:2.9s}
+.case-meta-label{
+  font-weight:700;color:var(--ink);
+  min-width:80px;
+  text-transform:uppercase;
+  font-size:10px;letter-spacing:1.2px;
+}
+.case-meta-val{flex:1}
+
+.case-twin{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:24px;
+  margin-bottom:14px;
+}
+@media (max-width:720px){.case-twin{grid-template-columns:1fr;gap:14px}}
+
+.section-title{
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:2.5px;
+  color:var(--ink);
+  text-transform:uppercase;
+  margin:0 0 10px;
+  padding-bottom:5px;
+  border-bottom:1px solid var(--ink-mid);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  opacity:0;
+  animation:fadeInLeft .8s cubic-bezier(.22,1,.36,1) 3.2s forwards;
+}
+.section-title.b{animation-delay:3.6s}
+.section-title::before{
+  content:'§';
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:18px;
+  color:var(--red-stamp);
+}
+
+.charge-list{list-style:none;padding-left:0;margin:0}
+.charge-list li{
+  font-family:'Crimson Pro',serif;
+  font-size:13px;
+  font-weight:600;
+  padding:7px 12px;
+  margin-bottom:5px;
+  background:rgba(0,0,0,.04);
+  border-left:3px solid var(--red-stamp);
+  color:var(--ink-faded);
+  opacity:0;
+  transform:translateX(-20px);
+  animation:fadeInLeft .6s cubic-bezier(.22,1,.36,1) forwards;
+}
+.charge-list li:nth-child(1){animation-delay:3.4s}
+.charge-list li:nth-child(2){animation-delay:3.5s}
+.charge-list li:nth-child(3){animation-delay:3.6s}
+.charge-list li::before{
+  content:counter(charge,upper-roman) '.';
+  counter-increment:charge;
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  color:var(--red-stamp);
+  margin-right:8px;
+  font-size:11px;
+}
+.charge-list{counter-reset:charge}
+
+.exhibit-grid{display:flex;flex-direction:column;gap:5px}
+.exhibit{
+  position:relative;
+  padding:7px 12px 7px 42px;
+  background:rgba(255,255,255,.4);
+  border:1px solid var(--paper-edge);
+  font-family:'Special Elite',monospace;
+  font-size:11px;
+  line-height:1.35;
+  color:var(--ink-faded);
+  opacity:0;
+  animation:fadeInUp .5s cubic-bezier(.22,1,.36,1) forwards;
+}
+.exhibit:nth-child(1){animation-delay:4.2s}
+.exhibit:nth-child(2){animation-delay:4.3s}
+.exhibit:nth-child(3){animation-delay:4.4s}
+.exhibit:nth-child(4){animation-delay:4.5s}
+.exhibit:nth-child(5){animation-delay:4.6s}
+.exhibit-tag{
+  position:absolute;
+  top:50%;
+  left:6px;
+  transform:translateY(-50%);
+  width:30px;
+  font-family:'Cinzel',serif;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.8px;
+  color:var(--red-stamp);
+  text-align:center;
+  border:1.2px solid var(--red-stamp);
+  padding:2px 3px;
+  line-height:1;
+}
+.exhibit-tag span{display:block;font-size:13px;letter-spacing:0;margin-top:1px}
+.exhibit b{color:var(--ink);font-weight:700}
+
+.signature-block{
+  margin-top:auto;
+  padding-top:16px;
+  border-top:1px dashed var(--ink-mid);
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  gap:18px;
+  opacity:0;
+  animation:fadeIn 1s 4.8s forwards;
+}
+.signature{font-family:'Special Elite',monospace;font-size:10px;color:var(--ink-mid)}
+.signature-line{
+  width:200px;
+  border-bottom:1px solid var(--ink);
+  margin-bottom:3px;
+  height:24px;
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:18px;
+  color:var(--ink);
+  padding-left:5px;
+  display:flex;
+  align-items:flex-end;
+  padding-bottom:2px;
+}
+
+/* Hidden gavel trigger */
+.gavel-seal{
+  position:absolute;
+  bottom:18px;
+  right:24px;
+  width:72px;
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  z-index:6;
+  opacity:0;
+  transition:opacity .3s, transform .3s;
+  animation:fadeIn 1.2s 5s forwards;
+}
+.gavel-seal:hover{opacity:1;transform:scale(1.06)}
+.gavel-seal svg{
+  width:100%;height:100%;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.3));
+}
+.gavel-seal::after{
+  content:'OFFICIAL · SEAL';
+  position:absolute;
+  bottom:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:'Cinzel',serif;
+  font-size:7px;
+  letter-spacing:2px;
+  color:var(--ink-mid);
+  white-space:nowrap;
+  opacity:.6;
+}
+.gavel-seal::before{
+  content:'';
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  border:1px dashed var(--gold);
+  opacity:0;
+  animation:hintPulse 4s ease-in-out 8s infinite;
+}
+@keyframes hintPulse{
+  0%,100%{opacity:0;transform:scale(.95)}
+  50%{opacity:.25;transform:scale(1.08)}
+}
+
+/* ════════════════════════════════════════════════════════════
+   GAVEL SLAM TRANSITION
+   ═══════════════════════════════════════════════════════════ */
+.transition{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(ellipse at center, rgba(20,8,4,.4) 0%, rgba(0,0,0,.98) 100%);
+  z-index:1000;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.5s cubic-bezier(.4,0,.2,1);
+}
+.transition.show{opacity:1;pointer-events:auto}
+.transition-flash{
+  position:absolute;inset:0;
+  background:#fff;opacity:0;
+}
+.transition.show .transition-flash{
+  animation:gavelFlash 1.4s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes gavelFlash{
+  0%{opacity:0}
+  20%{opacity:0}
+  25%{opacity:.7}
+  100%{opacity:0}
+}
+.transition-gavel{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:200px;height:200px;
+  transform:translate(-50%,-50%) rotate(-45deg) scale(.5);
+  opacity:0;
+}
+.transition.show .transition-gavel{
+  animation:gavelSlam 1.4s cubic-bezier(.5,0,.2,1) forwards;
+}
+@keyframes gavelSlam{
+  0%{opacity:0;transform:translate(-50%,-150%) rotate(-65deg) scale(2)}
+  25%{opacity:1;transform:translate(-50%,-50%) rotate(-15deg) scale(1.2)}
+  35%{opacity:1;transform:translate(-50%,-50%) rotate(0deg) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(0deg) scale(.6)}
+}
+
+/* ════════════════════════════════════════════════════════════
+   STAGE — full screen presentation
+   ═══════════════════════════════════════════════════════════ */
+.stage{
+  position:fixed;
+  inset:0;
+  background:#0a0606;
+  background-image:
+    radial-gradient(ellipse at 50% 30%, rgba(110,24,24,.18) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(160,118,40,.08) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0606 0%, #1a0808 100%);
+  z-index:999;
+  display:none;
+  overflow:hidden;
+}
+.stage.active{display:block}
+.stage::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(255,255,255,.012) 2px, rgba(255,255,255,.012) 3px);
+  pointer-events:none;z-index:2;
+}
+.stage::after{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,.6) 100%);
+  pointer-events:none;z-index:3;
+}
+
+.stage-bar{
+  position:absolute;
+  top:0;left:0;right:0;
+  height:48px;
+  background:linear-gradient(180deg, rgba(0,0,0,.85), rgba(0,0,0,.4));
+  border-bottom:1px solid rgba(160,118,40,.25);
+  z-index:10;
+  display:flex;
+  align-items:center;
+  padding:0 28px;
+  gap:24px;
+}
+.stage-case{
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--gold);
+  flex-shrink:0;
+}
+.stage-title{
+  flex:1;
+  text-align:center;
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:22px;
+  color:var(--gold-bright);
+  letter-spacing:1px;
+}
+.stage-progress{
+  display:flex;
+  gap:5px;
+  align-items:center;
+  flex-shrink:0;
+}
+.stage-progress-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:rgba(160,118,40,.25);
+  border:1px solid rgba(160,118,40,.5);
+  transition:all .4s;
+}
+.stage-progress-dot.passed{background:rgba(160,118,40,.5)}
+.stage-progress-dot.active{
+  background:var(--gold-bright);
+  border-color:var(--gold-bright);
+  box-shadow:0 0 10px rgba(232,200,120,.7);
+  transform:scale(1.4);
+}
+
+.stage-controls{
+  position:absolute;
+  bottom:24px;
+  right:28px;
+  z-index:10;
+  display:flex;
+  gap:8px;
+  opacity:.4;
+  transition:opacity .3s;
+}
+.stage-controls:hover{opacity:1}
+.stage-btn{
+  padding:8px 14px;
+  background:rgba(20,12,8,.7);
+  border:1px solid rgba(160,118,40,.3);
+  color:var(--gold);
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:2px;
+  cursor:pointer;
+  text-transform:uppercase;
+  transition:all .2s;
+}
+.stage-btn:hover{
+  background:rgba(160,118,40,.15);
+  color:var(--gold-bright);
+  border-color:var(--gold-bright);
+}
+.stage-btn.active{
+  background:rgba(160,118,40,.2);
+  color:var(--gold-bright);
+  border-color:var(--gold-bright);
+}
+
+/* ─── Slides ─── */
+.slides{position:absolute;inset:48px 0 0 0;z-index:5}
+.slide{
+  position:absolute;
+  inset:0;
+  padding:40px clamp(40px,8vw,120px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1s cubic-bezier(.4,0,.2,1);
+}
+.slide.active{opacity:1;pointer-events:auto;z-index:5}
+
+/* HERO / opening slide */
+.slide-hero{align-items:center;text-align:center}
+.slide-hero-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:13px;
+  letter-spacing:8px;
+  color:var(--gold);
+  margin-bottom:18px;
+  opacity:0;
+}
+.slide.active .slide-hero-eyebrow{animation:fadeInDown 1.2s .3s forwards}
+.slide-hero-h{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(40px,8vw,108px);
+  color:#f3e8d2;
+  line-height:.95;
+  margin-bottom:24px;
+  text-shadow:0 0 40px rgba(232,200,120,.3),2px 2px 0 rgba(0,0,0,.5);
+  opacity:0;
+}
+.slide.active .slide-hero-h{animation:titleReveal 1.6s .6s forwards}
+@keyframes titleReveal{
+  0%{opacity:0;transform:scale(1.15);filter:blur(20px)}
+  60%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:scale(1);filter:blur(0)}
+}
+.slide-hero-claim{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(18px,2.4vw,28px);
+  font-weight:500;
+  font-style:italic;
+  color:#e8c878;
+  max-width:1000px;
+  line-height:1.5;
+  margin-top:18px;
+  opacity:0;
+}
+.slide.active .slide-hero-claim{animation:fadeInUp 1.4s 1.5s forwards}
+
+/* CHARGES slide */
+.slide-charges-h{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(36px,5vw,64px);
+  color:#f3e8d2;
+  margin-bottom:36px;
+  opacity:0;
+}
+.slide.active .slide-charges-h{animation:fadeInDown 1s forwards}
+.slide-charges-h::before{
+  content:'§';
+  color:var(--red-stamp);
+  margin-right:14px;
+  font-size:.9em;
+}
+.slide-charges-intro{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(16px,1.8vw,22px);
+  color:rgba(243,232,210,.85);
+  margin-bottom:24px;
+  font-style:italic;
+  opacity:0;
+}
+.slide.active .slide-charges-intro{animation:fadeIn 1s .3s forwards}
+.slide-charges-list{list-style:none}
+.slide-charges-list li{
+  font-family:'Cinzel',serif;
+  font-size:clamp(20px,2.4vw,34px);
+  font-weight:600;
+  letter-spacing:3px;
+  color:#e8c878;
+  padding:16px 0;
+  border-bottom:1px solid rgba(160,118,40,.3);
+  opacity:0;
+  transform:translateX(-30px);
+  display:flex;
+  align-items:center;
+  gap:24px;
+}
+.slide.active .slide-charges-list li:nth-child(1){animation:slideInLeft 1s .8s forwards}
+.slide.active .slide-charges-list li:nth-child(2){animation:slideInLeft 1s 1.3s forwards}
+.slide.active .slide-charges-list li:nth-child(3){animation:slideInLeft 1s 1.8s forwards}
+.slide-charges-list li::before{
+  content:counter(roman,upper-roman) '.';
+  counter-increment:roman;
+  font-family:'UnifrakturMaguntia',serif;
+  color:var(--red-stamp);
+  font-size:.9em;
+  min-width:60px;
+}
+.slide-charges-list{counter-reset:roman}
+
+/* CONTEXT slide */
+.slide-context{align-items:center;text-align:center}
+.slide-context-label{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:8px;
+  color:var(--gold);
+  margin-bottom:24px;
+  opacity:0;
+}
+.slide.active .slide-context-label{animation:fadeIn 1s forwards}
+.slide-context-h{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(36px,5vw,64px);
+  color:#f3e8d2;
+  line-height:1;
+  margin-bottom:30px;
+  opacity:0;
+}
+.slide.active .slide-context-h{animation:fadeInDown 1.2s .3s forwards}
+.slide-context-text{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(16px,1.7vw,22px);
+  line-height:1.7;
+  color:rgba(243,232,210,.92);
+  max-width:920px;
+  opacity:0;
+}
+.slide.active .slide-context-text{animation:fadeInUp 1.2s .8s forwards}
+
+/* EVIDENCE slides */
+.slide-evidence{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:48px;
+  align-items:center;
+  padding:60px clamp(40px,7vw,100px);
+}
+.evidence-tag{
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  text-align:center;
+  border:3px solid var(--red-stamp);
+  padding:24px 18px;
+  color:var(--red-stamp);
+  background:rgba(168,37,37,.05);
+  width:140px;
+  flex-shrink:0;
+  opacity:0;
+  transform:rotate(-5deg) scale(.5);
+}
+.slide.active .evidence-tag{animation:stampSlam 1s .3s forwards}
+@keyframes stampSlam{
+  0%{opacity:0;transform:rotate(-15deg) scale(2)}
+  60%{opacity:1;transform:rotate(-3deg) scale(.95)}
+  100%{opacity:.95;transform:rotate(-3deg) scale(1)}
+}
+.evidence-tag-label{font-size:9px;letter-spacing:3px;margin-bottom:6px}
+.evidence-tag-letter{font-family:'UnifrakturMaguntia',serif;font-size:64px;line-height:.85;margin:8px 0}
+.evidence-tag-num{font-size:11px;letter-spacing:2px;font-family:'Special Elite',monospace}
+.evidence-body{flex:1}
+.evidence-chapter{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:6px;
+  color:var(--gold);
+  margin-bottom:8px;
+  opacity:0;
+}
+.slide.active .evidence-chapter{animation:fadeIn 1s .5s forwards}
+.evidence-h{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(28px,4vw,52px);
+  color:#f3e8d2;
+  line-height:1.05;
+  margin-bottom:22px;
+  opacity:0;
+}
+.slide.active .evidence-h{animation:fadeInUp 1.2s .7s forwards}
+.evidence-quote{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(16px,1.7vw,22px);
+  font-style:italic;
+  color:#e8c878;
+  border-left:3px solid var(--red-stamp);
+  padding:16px 0 16px 24px;
+  margin-bottom:20px;
+  line-height:1.55;
+  opacity:0;
+}
+.slide.active .evidence-quote{animation:fadeInUp 1s 1.1s forwards}
+.evidence-explanation{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(14px,1.4vw,18px);
+  color:rgba(243,232,210,.88);
+  line-height:1.65;
+  max-width:740px;
+  opacity:0;
+}
+.slide.active .evidence-explanation{animation:fadeInUp 1s 1.5s forwards}
+
+/* COUNTER + REBUTTAL slide */
+.slide-counter{padding:40px clamp(20px,4vw,80px)}
+.slide-counter-h{
+  text-align:center;
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(32px,5vw,56px);
+  color:#f3e8d2;
+  margin-bottom:36px;
+  opacity:0;
+}
+.slide.active .slide-counter-h{animation:fadeInDown 1s forwards}
+.counter-grid{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:32px;
+  align-items:stretch;
+}
+@media (max-width:768px){.counter-grid{grid-template-columns:1fr;gap:14px}}
+.counter-side{
+  padding:28px 24px;
+  border:1px solid rgba(160,118,40,.3);
+  background:rgba(0,0,0,.3);
+  opacity:0;
+  transform:translateY(30px);
+}
+.slide.active .counter-side.left{animation:fadeInUp 1.2s .4s forwards}
+.slide.active .counter-side.right{animation:fadeInUp 1.2s .8s forwards}
+.counter-side-label{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:5px;
+  color:var(--gold);
+  margin-bottom:14px;
+  text-transform:uppercase;
+}
+.counter-side.right .counter-side-label{color:var(--red-stamp)}
+.counter-side-text{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(15px,1.5vw,20px);
+  line-height:1.65;
+  color:rgba(243,232,210,.9);
+}
+.counter-side.right .counter-side-text{color:#f3e8d2;font-weight:500}
+.counter-vs{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:64px;
+  color:var(--red-stamp);
+  text-shadow:0 0 30px rgba(168,37,37,.5);
+  opacity:0;
+}
+.slide.active .counter-vs{animation:fadeIn 1s 1.2s forwards}
+
+/* CLOSING slide */
+.slide-close{align-items:center;text-align:center}
+.slide-close-label{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:8px;
+  color:var(--gold);
+  margin-bottom:28px;
+  opacity:0;
+}
+.slide.active .slide-close-label{animation:fadeIn 1s forwards}
+.slide-close-text{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(16px,2vw,26px);
+  font-weight:500;
+  line-height:1.55;
+  color:#f3e8d2;
+  max-width:1000px;
+  margin:0 auto 18px;
+  opacity:0;
+}
+.slide.active .slide-close-text{animation:fadeInUp 1.2s .5s forwards}
+.slide-close-quote{
+  font-family:'Crimson Pro',serif;
+  font-style:italic;
+  font-size:clamp(15px,1.8vw,22px);
+  color:#e8c878;
+  border-left:3px solid var(--red-stamp);
+  padding:14px 0 14px 22px;
+  margin:14px auto;
+  max-width:880px;
+  text-align:left;
+  line-height:1.5;
+  opacity:0;
+}
+.slide.active .slide-close-quote{animation:fadeInUp 1.2s 1s forwards}
+
+/* VERDICT slide */
+.slide-verdict{align-items:center;justify-content:center;text-align:center}
+.verdict-court{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:8px;
+  color:var(--gold);
+  margin-bottom:14px;
+  opacity:0;
+}
+.slide.active .verdict-court{animation:fadeIn 1s forwards}
+.verdict-finds{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(28px,4vw,52px);
+  color:#f3e8d2;
+  margin-bottom:24px;
+  opacity:0;
+}
+.slide.active .verdict-finds{animation:fadeInDown 1.2s .4s forwards}
+.verdict-stamp{
+  position:relative;
+  display:inline-block;
+  padding:36px 80px;
+  border:8px solid var(--red-stamp);
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:clamp(60px,12vw,160px);
+  letter-spacing:14px;
+  color:var(--red-stamp);
+  background:rgba(168,37,37,.06);
+  transform:rotate(-3deg) scale(.3);
+  opacity:0;
+  text-shadow:0 0 40px rgba(168,37,37,.4);
+  margin:20px 0;
+}
+.slide.active .verdict-stamp{animation:verdictSlam 1.8s 1.2s cubic-bezier(.5,1.5,.5,1) forwards}
+@keyframes verdictSlam{
+  0%{opacity:0;transform:rotate(-25deg) scale(3)}
+  30%{opacity:.5}
+  50%{opacity:1;transform:rotate(-3deg) scale(.92)}
+  60%{transform:rotate(-3deg) scale(1.02)}
+  100%{opacity:1;transform:rotate(-3deg) scale(1)}
+}
+.verdict-stamp::before{
+  content:'';
+  position:absolute;
+  inset:-3px;
+  border:2px solid var(--red-stamp);
+}
+.verdict-rationale{
+  margin-top:30px;
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(15px,1.7vw,22px);
+  color:rgba(232,200,120,.85);
+  font-style:italic;
+  max-width:900px;
+  line-height:1.55;
+  opacity:0;
+}
+.slide.active .verdict-rationale{animation:fadeIn 1.2s 2.6s forwards}
+
+/* END slide */
+.slide-end{align-items:center;text-align:center}
+.slide-end-stamp{
+  font-family:'Special Elite',monospace;
+  font-size:14px;
+  letter-spacing:6px;
+  color:var(--gold);
+  margin-bottom:16px;
+  opacity:0;
+}
+.slide.active .slide-end-stamp{animation:fadeIn 1s forwards}
+.slide-end-h{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(48px,8vw,96px);
+  color:#f3e8d2;
+  margin-bottom:24px;
+  opacity:0;
+}
+.slide.active .slide-end-h{animation:fadeInUp 1.5s .4s forwards}
+
+/* Generic animations */
+@keyframes fadeIn{to{opacity:1}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInLeft{to{opacity:1;transform:translateX(0)}}
+
+/* ════════════════════════════════════════════════════════════
+   READ-ALONG WORD HIGHLIGHTING
+   ═══════════════════════════════════════════════════════════ */
+.rd-word{
+  display:inline-block;
+  position:relative;
+  transition:color .2s ease, text-shadow .25s ease;
+}
+.rd-word.rd-active{
+  color:#fffde0 !important;
+  text-shadow:0 0 12px rgba(255,253,224,.7), 0 0 24px rgba(232,200,120,.4);
+  animation:wordPop .35s cubic-bezier(.5,1.5,.5,1);
+}
+.rd-word.rd-active::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:-2px;
+  height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold-bright) 30%, #fff5cc 50%, var(--gold-bright) 70%, transparent);
+  border-radius:2px;
+  box-shadow:0 0 8px rgba(232,200,120,.7);
+  animation:underlineSweep .35s cubic-bezier(.22,1,.36,1);
+}
+.rd-word.rd-read{opacity:.55;transition:opacity .4s ease}
+@keyframes wordPop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.06)}
+  100%{transform:scale(1)}
+}
+@keyframes underlineSweep{
+  from{transform:scaleX(0);transform-origin:left}
+  to{transform:scaleX(1);transform-origin:left}
+}
+.evidence-quote .rd-word.rd-active,
+.slide-close-quote .rd-word.rd-active{
+  color:#fff !important;
+  text-shadow:0 0 16px rgba(255,255,255,.6), 0 0 28px rgba(232,200,120,.5);
+}
+.verdict-stamp.rd-active,
+.verdict-stamp .rd-word.rd-active{
+  color:#ff5050 !important;
+  text-shadow:0 0 24px rgba(255,80,80,.8), 0 0 40px rgba(168,37,37,.6);
+}
+
+</style>
+</head>
+<body>
+
+<!-- BOOT OVERLAY -->
+<div class="boot" id="bootOverlay">
+  <div class="boot-seal">§</div>
+  <div class="boot-line l1">CASE FILE OPENING…</div>
+  <div class="boot-line l2">FILE NO. 1818-VFM</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     FACADE — case file front
+     ════════════════════════════════════════════════════════════ -->
+<div class="facade" id="facade">
+
+  <div class="candle left"></div>
+  <div class="candle right"></div>
+  <div class="embers" id="embers" aria-hidden="true"></div>
+
+  <article class="folder">
+
+    <div class="stamp-confidential">CONFIDENTIAL</div>
+
+    <header class="folder-header">
+      <div class="folder-jurisdiction">SUPREME COURT <span>·</span> COURT OF MORAL JUSTICE <span>·</span> A.D. 1818</div>
+      <h1 class="folder-title">The Trial of<br>Victor Frankenstein</h1>
+      <div class="folder-vs">In re:</div>
+      <div class="folder-subtitle">A Question of Creation, Abandonment, and Consequence</div>
+    </header>
+
+    <div class="case-meta">
+      <div class="case-meta-row"><span class="case-meta-label">Defendant</span><span class="case-meta-val">Victor Frankenstein</span></div>
+      <div class="case-meta-row"><span class="case-meta-label">Counsel</span><span class="case-meta-val">[YOUR NAME HERE]</span></div>
+      <div class="case-meta-row"><span class="case-meta-label">Charges</span><span class="case-meta-val">Negligence · Abandonment · Indirect Deaths</span></div>
+      <div class="case-meta-row"><span class="case-meta-label">Tribunal</span><span class="case-meta-val">Hon. Mrs. Richard, Presiding</span></div>
+    </div>
+
+    <div class="case-twin">
+      <div>
+        <h2 class="section-title">Charges</h2>
+        <ul class="charge-list">
+          <li>Negligence as a Creator</li>
+          <li>Willful Abandonment</li>
+          <li>Indirect Responsibility for the Deaths</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="section-title b">Exhibits</h2>
+        <div class="exhibit-grid">
+          <div class="exhibit"><div class="exhibit-tag">EX<span>A</span></div><b>Chapter 5</b> — Victor abandons his creation.</div>
+          <div class="exhibit"><div class="exhibit-tag">EX<span>B</span></div><b>Chapters 11–13</b> — The Creature is initially good.</div>
+          <div class="exhibit"><div class="exhibit-tag">EX<span>C</span></div><b>Chapters 11–16</b> — Society rejects the Creature.</div>
+          <div class="exhibit"><div class="exhibit-tag">EX<span>D</span></div><b>Chapter 20</b> — Victor refuses responsibility again.</div>
+          <div class="exhibit"><div class="exhibit-tag">EX<span>E</span></div><b>The Deaths</b> — William, Clerval, Elizabeth.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="signature-block">
+      <div>
+        <div class="signature-line">[Your Name]</div>
+        <div class="signature">Counsel for the Prosecution</div>
+      </div>
+      <div>
+        <div class="signature-line">M. Shelley</div>
+        <div class="signature">Witness for the Court</div>
+      </div>
+    </div>
+
+    <!-- HIDDEN TRIGGER -->
+    <div class="gavel-seal" id="gavelTrigger" title="">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#a07628" stroke-width="1.2"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#a07628" stroke-width=".5" stroke-dasharray="2 2"/>
+        <g transform="translate(50 50)" stroke="#3d2f24" stroke-width="2.5" stroke-linecap="round" fill="#5a4636">
+          <g transform="rotate(-45)">
+            <rect x="-22" y="-6" width="20" height="12" rx="1.5"/>
+            <rect x="-2" y="-1" width="24" height="2" rx="1"/>
+          </g>
+          <g transform="rotate(45)">
+            <rect x="2" y="-6" width="20" height="12" rx="1.5"/>
+            <rect x="-22" y="-1" width="24" height="2" rx="1"/>
+          </g>
+        </g>
+        <text x="50" y="56" text-anchor="middle" font-family="Cinzel" font-size="14" font-weight="900" fill="#a82525">§</text>
+      </svg>
+    </div>
+
+  </article>
+</div>
+
+<!-- TRANSITION -->
+<div class="transition" id="transition" aria-hidden="true">
+  <div class="transition-flash"></div>
+  <svg class="transition-gavel" viewBox="0 0 100 100">
+    <g stroke="#e8c878" stroke-width="3" stroke-linecap="round" fill="#a07628">
+      <rect x="20" y="40" width="50" height="20" rx="2"/>
+      <rect x="60" y="48" width="40" height="4" rx="2"/>
+      <rect x="0" y="70" width="100" height="10" rx="2" fill="#3d2f24"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     STAGE — auto presentation
+     ════════════════════════════════════════════════════════════ -->
+<div class="stage" id="stage">
+
+  <div class="stage-bar">
+    <div class="stage-case">CASE NO. 1818-VFM</div>
+    <div class="stage-title">The Trial of Victor Frankenstein</div>
+    <div class="stage-progress" id="progress"></div>
+  </div>
+
+  <div class="slides" id="slides">
+
+    <!-- 1. HERO / opening -->
+    <section class="slide slide-hero">
+      <div class="slide-hero-eyebrow">COURT OF MORAL JUSTICE · 1818</div>
+      <h1 class="slide-hero-h">The Trial of<br>Victor Frankenstein</h1>
+      <p class="slide-hero-claim">Victor Frankenstein is guilty because he created life and then abandoned it. His neglect directly caused the Creature's suffering and the deaths that followed.</p>
+    </section>
+
+    <!-- 2. CHARGES -->
+    <section class="slide slide-charges">
+      <h2 class="slide-charges-h">Charges</h2>
+      <p class="slide-charges-intro">Victor Frankenstein stands accused on three counts:</p>
+      <ol class="slide-charges-list">
+        <li>Negligence as a creator.</li>
+        <li>Willful abandonment.</li>
+        <li>Indirect responsibility for the deaths of William, Clerval, and Elizabeth.</li>
+      </ol>
+    </section>
+
+    <!-- 3. CONTEXT -->
+    <section class="slide slide-context">
+      <div class="slide-context-label">CONTEXT</div>
+      <h2 class="slide-context-h">Background of the Case</h2>
+      <p class="slide-context-text">Victor Frankenstein is a scientist who discovers how to create life. After bringing the Creature to life, he is horrified by it and immediately abandons it. The Creature, left alone with no guidance, must learn about the world on its own and is repeatedly rejected by society.</p>
+    </section>
+
+    <!-- 4. EVIDENCE A -->
+    <section class="slide slide-evidence">
+      <div class="evidence-tag">
+        <div class="evidence-tag-label">EXHIBIT</div>
+        <div class="evidence-tag-letter">A</div>
+        <div class="evidence-tag-num">CH. 5</div>
+      </div>
+      <div class="evidence-body">
+        <div class="evidence-chapter">CHAPTER 5</div>
+        <h3 class="evidence-h">Victor abandons his creation.</h3>
+        <blockquote class="evidence-quote">The beauty of the dream vanished, and breathless horror and disgust filled my heart.</blockquote>
+        <p class="evidence-explanation">Victor abandons the Creature the moment it comes to life. Instead of guiding or helping it, he runs away. This shows he failed his responsibility as a creator immediately.</p>
+      </div>
+    </section>
+
+    <!-- 5. EVIDENCE B -->
+    <section class="slide slide-evidence">
+      <div class="evidence-tag">
+        <div class="evidence-tag-label">EXHIBIT</div>
+        <div class="evidence-tag-letter">B</div>
+        <div class="evidence-tag-num">CH. 11–13</div>
+      </div>
+      <div class="evidence-body">
+        <div class="evidence-chapter">CHAPTERS 11–13</div>
+        <h3 class="evidence-h">The Creature is initially good.</h3>
+        <blockquote class="evidence-quote">I was benevolent and good; misery made me a fiend.</blockquote>
+        <p class="evidence-explanation">The Creature learns kindness, language, and morality by observing others. He desires connection and is not born evil. This proves identity is shaped by experience.</p>
+      </div>
+    </section>
+
+    <!-- 6. EVIDENCE C -->
+    <section class="slide slide-evidence">
+      <div class="evidence-tag">
+        <div class="evidence-tag-label">EXHIBIT</div>
+        <div class="evidence-tag-letter">C</div>
+        <div class="evidence-tag-num">CH. 11–16</div>
+      </div>
+      <div class="evidence-body">
+        <div class="evidence-chapter">CHAPTERS 11–16</div>
+        <h3 class="evidence-h">Society rejects the Creature.</h3>
+        <blockquote class="evidence-quote">Felix darted forward, and struck me violently with a stick.</blockquote>
+        <p class="evidence-explanation">Even when the Creature approaches peacefully, he is met with violence. This repeated rejection causes isolation and emotional suffering, which drives his transformation.</p>
+      </div>
+    </section>
+
+    <!-- 7. EVIDENCE D -->
+    <section class="slide slide-evidence">
+      <div class="evidence-tag">
+        <div class="evidence-tag-label">EXHIBIT</div>
+        <div class="evidence-tag-letter">D</div>
+        <div class="evidence-tag-num">CH. 20</div>
+      </div>
+      <div class="evidence-body">
+        <div class="evidence-chapter">CHAPTER 20</div>
+        <h3 class="evidence-h">Victor refuses responsibility again.</h3>
+        <blockquote class="evidence-quote">Shall I create another like yourself?</blockquote>
+        <p class="evidence-explanation">Victor has a second chance to fix his mistake by creating a companion, but he destroys it. He knowingly increases the Creature's suffering and again refuses responsibility, despite knowing the consequences.</p>
+      </div>
+    </section>
+
+    <!-- 8. EVIDENCE E -->
+    <section class="slide slide-evidence">
+      <div class="evidence-tag">
+        <div class="evidence-tag-label">EXHIBIT</div>
+        <div class="evidence-tag-letter">E</div>
+        <div class="evidence-tag-num">FINAL</div>
+      </div>
+      <div class="evidence-body">
+        <div class="evidence-chapter">CONSEQUENCES</div>
+        <h3 class="evidence-h">The results of Victor's actions.</h3>
+        <blockquote class="evidence-quote">You are my creator, but I am your master; obey!</blockquote>
+        <p class="evidence-explanation">The Creature turns to violence after abandonment and rejection. The deaths of William, Clerval, and Elizabeth follow this pattern. This shows a clear chain of cause and effect, where Victor's actions directly lead to these outcomes.</p>
+      </div>
+    </section>
+
+    <!-- 9. COUNTERARGUMENT + REBUTTAL -->
+    <section class="slide slide-counter">
+      <h2 class="slide-counter-h">The Defense vs. The Prosecution</h2>
+      <div class="counter-grid">
+        <div class="counter-side left">
+          <div class="counter-side-label">The Defense Argues</div>
+          <p class="counter-side-text">The Creature is responsible because he makes conscious choices. He understands right and wrong, yet still chooses violence. After being rejected, he chooses revenge instead of restraint — he deliberately kills William, Clerval, and Elizabeth. These actions are intentional, meaning the responsibility lies with him.</p>
+        </div>
+        <div class="counter-vs">vs</div>
+        <div class="counter-side right">
+          <div class="counter-side-label">The Prosecution Responds</div>
+          <p class="counter-side-text">The defense focuses on the Creature's choices, but ignores the cause of those choices. The Creature was not born violent — he states, "I was benevolent and good; misery made me a fiend." Victor created life and then abandoned it without guidance, forcing the Creature into isolation and suffering. That suffering directly leads to his actions. This is a clear chain of cause and effect: Victor's neglect created the conditions that led to violence. Therefore, Victor is responsible.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. CLOSING STATEMENT -->
+    <section class="slide slide-close">
+      <div class="slide-close-label">CLOSING STATEMENT · FOR THE PROSECUTION</div>
+      <p class="slide-close-text">Victor Frankenstein is guilty because he created life but refused <strong>responsibility</strong> for it.</p>
+      <p class="slide-close-text">The Creature was not born evil, but shaped by <strong>neglect and rejection</strong>.</p>
+      <p class="slide-close-text">Victor had the power to guide his creation but failed to do so.</p>
+      <p class="slide-close-text">This <strong>chain of cause and effect</strong> shows that Victor's actions directly caused the outcome.</p>
+      <p class="slide-close-text" style="margin-top:14px;font-style:italic;color:#e8c878">Victor had power, but failed to take responsibility for it.</p>
+    </section>
+
+    <!-- 11. VERDICT -->
+    <section class="slide slide-verdict">
+      <div class="verdict-court">THE COURT OF MORAL JUSTICE FINDS</div>
+      <div class="verdict-finds">The defendant, Victor Frankenstein —</div>
+      <div class="verdict-stamp">GUILTY</div>
+      <p class="verdict-rationale">Victor Frankenstein is guilty on all counts because his actions directly caused the outcome.</p>
+    </section>
+
+    <!-- 12. END -->
+    <section class="slide slide-end">
+      <div class="slide-end-stamp">— THE COURT IS ADJOURNED —</div>
+      <h2 class="slide-end-h">Thank You.</h2>
+    </section>
+
+  </div>
+
+  <div class="stage-controls">
+    <button class="stage-btn" id="btnNarrate" title="Toggle narration">🔊 Voice</button>
+    <button class="stage-btn" id="btnPause" title="Pause">⏸ Pause</button>
+    <button class="stage-btn" id="btnExit" title="Exit">✕ Exit</button>
+  </div>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   THE TRIAL — controller
+   ═══════════════════════════════════════════════════════════ */
+
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+// ─── Spawn floating embers ───
+(function spawnEmbers() {
+  const c = $('#embers');
+  if (!c) return;
+  const count = window.innerWidth < 768 ? 14 : 28;
+  for (let i = 0; i < count; i++) {
+    const e = document.createElement('div');
+    e.className = 'ember';
+    e.style.left = Math.random() * 100 + '%';
+    e.style.bottom = (-Math.random() * 20 - 5) + 'px';
+    e.style.setProperty('--drift', ((Math.random() - 0.5) * 80) + 'px');
+    e.style.animationDuration = (12 + Math.random() * 18) + 's';
+    e.style.animationDelay = (-Math.random() * 20) + 's';
+    const sz = 2 + Math.random() * 3;
+    e.style.width = sz + 'px';
+    e.style.height = sz + 'px';
+    e.style.opacity = (0.3 + Math.random() * 0.6).toFixed(2);
+    c.appendChild(e);
+  }
+})();
+
+// Remove boot overlay after fade
+setTimeout(() => { const b = $('#bootOverlay'); if (b) b.remove(); }, 4500);
+
+/* ════════════════════════════════════════════════════════════
+   READ-ALONG: speak visible text, highlight word-by-word
+   ═══════════════════════════════════════════════════════════ */
+
+const READABLE_SELECTOR = [
+  '.slide-hero-eyebrow',
+  '.slide-hero-h',
+  '.slide-hero-claim',
+  '.slide-charges-h',
+  '.slide-charges-intro',
+  '.slide-charges-list li',
+  '.slide-context-label',
+  '.slide-context-h',
+  '.slide-context-text',
+  '.evidence-chapter',
+  '.evidence-h',
+  '.evidence-quote',
+  '.evidence-explanation',
+  '.slide-counter-h',
+  '.counter-side-label',
+  '.counter-side-text',
+  '.counter-vs',
+  '.slide-close-label',
+  '.slide-close-text',
+  '.slide-close-quote',
+  '.verdict-court',
+  '.verdict-finds',
+  '.verdict-stamp',
+  '.verdict-rationale',
+  '.slide-end-stamp',
+  '.slide-end-h'
+].join(',');
+
+/* Number/abbreviation normalizer for spoken text */
+function normalizeForSpeech(word) {
+  let w = word
+    .replace(/\bCh\b/gi, 'Chapter')
+    .replace(/\bChs\b/gi, 'Chapters')
+    .replace(/\bEXHIBIT\b/g, 'Exhibit')
+    .replace(/\bvs\b/gi, 'versus');
+  // Range with en-dash/hyphen between numbers
+  w = w.replace(/(\d+)[\u2013\-](\d+)/g, '$1 through $2');
+  return w;
+}
+
+function prepareSlideForReadAlong(slide) {
+  if (slide._readAlongWords) {
+    return {
+      words: slide._readAlongWords,
+      text: slide._readAlongText,
+      spokenToSpan: slide._spokenToSpan
+    };
+  }
+  const elements = slide.querySelectorAll(READABLE_SELECTOR);
+  const allWords = [];
+  const spokenToSpan = [];
+  let textBuffer = '';
+
+  elements.forEach((el, elIdx) => {
+    let skip = false;
+    for (let i = 0; i < elIdx; i++) {
+      if (elements[i].contains(el) && elements[i] !== el) { skip = true; break; }
+    }
+    if (skip) return;
+
+    wrapWordsInElement(el, allWords, (spokenChunk) => {
+      const spanIdx = allWords.length - 1;
+      const tokens = spokenChunk.split(/\s+/).filter(Boolean);
+      tokens.forEach(tok => {
+        textBuffer += (textBuffer ? ' ' : '') + tok;
+        spokenToSpan.push(spanIdx);
+      });
+    });
+
+    if (textBuffer && !textBuffer.endsWith('.') && !textBuffer.endsWith(',')) {
+      textBuffer += '.';
+    }
+  });
+
+  slide._readAlongWords = allWords;
+  slide._readAlongText = textBuffer;
+  slide._spokenToSpan = spokenToSpan;
+  return { words: allWords, text: textBuffer, spokenToSpan };
+}
+
+function wrapWordsInElement(el, allWords, onWord) {
+  const textNodes = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.textContent.trim().length > 0) textNodes.push(node);
+  }
+
+  textNodes.forEach(textNode => {
+    const text = textNode.textContent;
+    const parts = text.split(/(\s+)/);
+    const frag = document.createDocumentFragment();
+    parts.forEach(part => {
+      if (/^\s+$/.test(part) || part === '') {
+        if (part) frag.appendChild(document.createTextNode(part));
+      } else {
+        const span = document.createElement('span');
+        span.className = 'rd-word';
+        span.textContent = part;
+        frag.appendChild(span);
+        allWords.push(span);
+
+        let spoken = part
+          .replace(/[\u2013\u2014\u2026\u201C\u201D\u2018\u2019]/g, ' ')
+          .replace(/[.,;:!?(){}\[\]"]/g, '')
+          .replace(/--+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        if (!spoken || !/[a-zA-Z0-9]/.test(spoken)) return;
+        spoken = normalizeForSpeech(spoken);
+        if (!spoken) return;
+
+        const endsWithSentence = /[.!?]['")\]]?$/.test(part);
+        const endsWithComma = /[,;:]['")\]]?$/.test(part);
+
+        if (endsWithSentence) onWord(spoken + ',');
+        else if (endsWithComma) onWord(spoken + ',');
+        else onWord(spoken);
+      }
+    });
+    textNode.parentNode.replaceChild(frag, textNode);
+  });
+}
+
+function highlightWord(slide, idx) {
+  if (!slide._readAlongWords) return;
+  if (slide._lastActiveWord != null && slide._readAlongWords[slide._lastActiveWord]) {
+    slide._readAlongWords[slide._lastActiveWord].classList.remove('rd-active');
+    slide._readAlongWords[slide._lastActiveWord].classList.add('rd-read');
+  }
+  if (idx >= 0 && idx < slide._readAlongWords.length) {
+    slide._readAlongWords[idx].classList.add('rd-active');
+    slide._lastActiveWord = idx;
+    const rect = slide._readAlongWords[idx].getBoundingClientRect();
+    if (rect.top < 80 || rect.bottom > window.innerHeight - 80) {
+      slide._readAlongWords[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+}
+
+function resetSlideHighlights(slide) {
+  if (!slide._readAlongWords) return;
+  slide._readAlongWords.forEach(w => w.classList.remove('rd-active', 'rd-read'));
+  slide._lastActiveWord = null;
+}
+
+/* ════════════════════════════════════════════════════════════
+   STATE + CONTROLS
+   ═══════════════════════════════════════════════════════════ */
+
+const slides = $$('.slide');
+const progressBar = $('#progress');
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'stage-progress-dot';
+  progressBar.appendChild(d);
+});
+const dots = $$('.stage-progress-dot');
+
+const SLIDE_MIN_DURATIONS = [
+  6500,   // 1. hero
+  9000,   // 2. charges
+  10000,  // 3. context
+  12000,  // 4. evidence A
+  12000,  // 5. evidence B
+  12000,  // 6. evidence C
+  12000,  // 7. evidence D
+  12000,  // 8. evidence E
+  12000,  // 9. counter
+  13000,  // 10. closing
+  10000,  // 11. verdict
+  6000    // 12. end
+];
+
+const POST_NARRATION_BUFFER = 1800;
+const SPEECH_POLL_MS = 250;
+
+let currentSlide = 0;
+let presentationActive = false;
+let advanceTimer = null;
+let speechPoll = null;
+let narrationOn = true;
+let paused = false;
+let preferredVoice = null;
+
+/* ─── Triple-click trigger on the gavel ─── */
+const gavel = $('#gavelTrigger');
+let clickCount = 0;
+let clickTimer = null;
+gavel.addEventListener('click', () => {
+  if (presentationActive) return;
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => { clickCount = 0; }, 600);
+  if (clickCount >= 3) {
+    clickCount = 0;
+    startTrial();
+  }
+});
+
+/* Backup keyboard trigger: 'g' three times */
+let keyCount = 0;
+let keyTimer = null;
+document.addEventListener('keydown', (e) => {
+  if (presentationActive) return;
+  if (e.key.toLowerCase() === 'g') {
+    keyCount++;
+    clearTimeout(keyTimer);
+    keyTimer = setTimeout(() => { keyCount = 0; }, 1000);
+    if (keyCount >= 3) {
+      keyCount = 0;
+      startTrial();
+    }
+  }
+});
+
+/* Stage controls */
+$('#btnNarrate').addEventListener('click', () => {
+  narrationOn = !narrationOn;
+  $('#btnNarrate').classList.toggle('active', narrationOn);
+  $('#btnNarrate').textContent = narrationOn ? '🔊 Voice On' : '🔇 Voice Off';
+  if (!narrationOn) speechSynthesis.cancel();
+  else if (presentationActive) narrateCurrent();
+});
+
+$('#btnPause').addEventListener('click', () => {
+  paused = !paused;
+  $('#btnPause').classList.toggle('active', paused);
+  $('#btnPause').textContent = paused ? '▶ Resume' : '⏸ Pause';
+  if (paused) {
+    clearTimeout(advanceTimer);
+    clearInterval(speechPoll);
+    speechSynthesis.pause();
+  } else {
+    speechSynthesis.resume();
+    scheduleNextAdvance();
+  }
+});
+
+$('#btnExit').addEventListener('click', () => endTrial());
+
+document.addEventListener('keydown', (e) => {
+  if (!presentationActive) return;
+  if (e.key === 'Escape') endTrial();
+  else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft') prev();
+});
+
+/* Click anywhere on stage to advance */
+$('#stage').addEventListener('click', (e) => {
+  if (e.target.closest('.stage-controls')) return;
+  if (!presentationActive) return;
+  if (currentSlide < slides.length - 1) next();
+});
+
+/* ─── Trial start/end ─── */
+function startTrial() {
+  presentationActive = true;
+  $('#btnNarrate').classList.add('active');
+  $('#btnNarrate').textContent = '🔊 Voice On';
+
+  $('#transition').classList.add('show');
+
+  setTimeout(() => {
+    $('#facade').classList.add('hidden');
+    $('#stage').classList.add('active');
+    setTimeout(() => showSlide(0), 200);
+  }, 1100);
+
+  setTimeout(() => $('#transition').classList.remove('show'), 1500);
+}
+
+function endTrial() {
+  presentationActive = false;
+  clearTimeout(advanceTimer);
+  clearInterval(speechPoll);
+  speechSynthesis.cancel();
+  $('#stage').classList.remove('active');
+  $('#facade').classList.remove('hidden');
+  slides.forEach(s => {
+    s.classList.remove('active');
+    resetSlideHighlights(s);
+  });
+  dots.forEach(d => d.classList.remove('active', 'passed'));
+  currentSlide = 0;
+}
+
+function showSlide(idx) {
+  if (idx < 0 || idx >= slides.length) return;
+  speechSynthesis.cancel();
+  if (slides[currentSlide]) resetSlideHighlights(slides[currentSlide]);
+
+  slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+  dots.forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+    d.classList.toggle('passed', i < idx);
+  });
+
+  currentSlide = idx;
+  // Delay narration so slide entrance animations get a moment first
+  setTimeout(() => {
+    if (currentSlide === idx && presentationActive) narrateCurrent();
+  }, 600);
+  scheduleNextAdvance();
+}
+
+function next() {
+  if (currentSlide < slides.length - 1) showSlide(currentSlide + 1);
+}
+function prev() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+/* ─── Slide auto-advance ─── */
+function scheduleNextAdvance() {
+  clearTimeout(advanceTimer);
+  clearInterval(speechPoll);
+  if (paused) return;
+  if (currentSlide >= slides.length - 1) return;
+
+  const slideStartedAt = Date.now();
+  const minDuration = SLIDE_MIN_DURATIONS[currentSlide] || 8000;
+
+  if (!narrationOn || !('speechSynthesis' in window)) {
+    advanceTimer = setTimeout(() => {
+      if (!paused && presentationActive) next();
+    }, minDuration);
+    return;
+  }
+
+  // Wait 1.5s for speech to start, then poll for completion
+  let consecutiveIdle = 0;
+  setTimeout(() => {
+    if (!presentationActive || paused) return;
+    speechPoll = setInterval(() => {
+      if (paused || !presentationActive) {
+        clearInterval(speechPoll);
+        return;
+      }
+      if (speechSynthesis.speaking || speechSynthesis.pending) {
+        consecutiveIdle = 0;
+        return;
+      }
+      consecutiveIdle++;
+      if (consecutiveIdle < 3) return;
+
+      clearInterval(speechPoll);
+      const elapsed = Date.now() - slideStartedAt;
+      const remainingMin = Math.max(0, minDuration - elapsed);
+      const wait = Math.max(POST_NARRATION_BUFFER, remainingMin);
+      advanceTimer = setTimeout(() => {
+        if (!paused && presentationActive) next();
+      }, wait);
+    }, SPEECH_POLL_MS);
+  }, 1500);
+}
+
+/* ─── Voice picker ─── */
+function pickVoice() {
+  const voices = speechSynthesis.getVoices();
+  if (!voices.length) return null;
+  const preferences = [
+    /Google UK English Male/i,
+    /Microsoft.*George/i,
+    /Microsoft.*Ryan/i,
+    /Microsoft.*Guy/i,
+    /Daniel/i,
+    /Alex/i,
+    /Fred/i,
+    /English.*Male/i,
+    /en[-_]GB/i,
+    /en[-_]US/i,
+  ];
+  for (const pat of preferences) {
+    const v = voices.find(v => pat.test(v.name) || pat.test(v.lang));
+    if (v) return v;
+  }
+  return voices[0];
+}
+
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = () => { preferredVoice = pickVoice(); };
+  preferredVoice = pickVoice();
+}
+
+/* ─── Speak the current slide ─── */
+function narrateCurrent() {
+  if (!narrationOn) return;
+  if (!('speechSynthesis' in window)) return;
+  const slide = slides[currentSlide];
+  if (!slide) return;
+
+  const { words, text, spokenToSpan } = prepareSlideForReadAlong(slide);
+  if (!text) return;
+
+  resetSlideHighlights(slide);
+  speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(text);
+  if (!preferredVoice) preferredVoice = pickVoice();
+  if (preferredVoice) u.voice = preferredVoice;
+  u.rate = 0.78;
+  u.pitch = 0.85;
+  u.volume = 1;
+
+  const spokenPositions = [];
+  let pos = 0;
+  text.split(/\s+/).forEach((w, i) => {
+    spokenPositions.push({ start: pos, end: pos + w.length, idx: i });
+    pos += w.length + 1;
+  });
+
+  let lastSpanIdx = -1;
+  let gotBoundary = false;
+
+  u.onboundary = (e) => {
+    gotBoundary = true;
+    if (e.name && e.name !== 'word') return;
+    const ci = e.charIndex || 0;
+    let spokenIdx = -1;
+    for (let i = 0; i < spokenPositions.length; i++) {
+      if (spokenPositions[i].start <= ci && ci <= spokenPositions[i].end + 1) {
+        spokenIdx = i;
+        break;
+      }
+    }
+    if (spokenIdx === -1) {
+      for (let i = 0; i < spokenPositions.length; i++) {
+        if (spokenPositions[i].start <= ci) spokenIdx = i;
+        else break;
+      }
+    }
+    if (spokenIdx < 0 || spokenIdx >= spokenToSpan.length) return;
+
+    // The boundary event arrives slightly late on most browsers — the audio
+    // you hear is already on the next word by the time the event fires.
+    // Compensate by advancing one position so the underline lands on the
+    // word actually being heard.
+    let targetSpoken = Math.min(spokenIdx + 1, spokenToSpan.length - 1);
+    let spanIdx = spokenToSpan[targetSpoken];
+    if (spanIdx >= 0 && spanIdx !== lastSpanIdx && spanIdx < words.length) {
+      highlightWord(slide, spanIdx);
+      lastSpanIdx = spanIdx;
+    }
+  };
+
+  u.onend = () => {
+    // When speech ends, make sure the LAST word is properly highlighted
+    // briefly before being marked as read (so it doesn't look skipped).
+    if (lastSpanIdx < words.length - 1) {
+      highlightWord(slide, words.length - 1);
+      lastSpanIdx = words.length - 1;
+      // Then a moment later, mark all as read
+      setTimeout(() => {
+        if (words[words.length - 1]) {
+          words[words.length - 1].classList.remove('rd-active');
+          words[words.length - 1].classList.add('rd-read');
+        }
+        for (let i = 0; i < words.length - 1; i++) {
+          if (words[i]) {
+            words[i].classList.remove('rd-active');
+            words[i].classList.add('rd-read');
+          }
+        }
+      }, 450);
+    } else if (lastSpanIdx >= 0 && words[lastSpanIdx]) {
+      // Already on last word — just hold briefly, then mark read
+      setTimeout(() => {
+        words[lastSpanIdx].classList.remove('rd-active');
+        words[lastSpanIdx].classList.add('rd-read');
+      }, 450);
+    }
+  };
+
+  speechSynthesis.speak(u);
+
+  // Fallback timer if browser doesn't fire boundary events
+  setTimeout(() => {
+    if (!gotBoundary && narrationOn && presentationActive) {
+      runFallbackHighlight(slide, words);
+    }
+  }, 500);
+}
+
+function runFallbackHighlight(slide, words) {
+  const wordCount = words.length;
+  if (!wordCount) return;
+  const estPerWord = 520;
+  let i = 0;
+  function tick() {
+    if (!presentationActive || !narrationOn) return;
+    if (slides[currentSlide] !== slide) return;
+    if (i >= wordCount) return;
+    highlightWord(slide, i);
+    i++;
+    setTimeout(tick, estPerWord);
+  }
+  tick();
+}
+
+/* Pre-warm speech engine */
+window.addEventListener('load', () => {
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    speechSynthesis.speak(u);
+  }
+});
+
+</script>
+</body>
+</html>
