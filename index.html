@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Trial of Victor Frankenstein</title>
 
-  <script defer src="/_vercel/insights/script.js"></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Special+Elite&family=UnifrakturMaguntia&family=Crimson+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1124,7 +1122,7 @@ body{
 
     <div class="case-meta">
       <div class="case-meta-row"><span class="case-meta-label">Defendant</span><span class="case-meta-val">Victor Frankenstein</span></div>
-      <div class="case-meta-row"><span class="case-meta-label">Counsel</span><span class="case-meta-val">[Westyn Ardoin - Eli Kennedy - Payton Langley - Ayden Fotenot]</span></div>
+      <div class="case-meta-row"><span class="case-meta-label">Counsel</span><span class="case-meta-val">Westyn Ardoin · Eli Kennedy · Payton Langley · Ayden Fontenot</span></div>
       <div class="case-meta-row"><span class="case-meta-label">Charges</span><span class="case-meta-val">Negligence · Abandonment · Indirect Deaths</span></div>
       <div class="case-meta-row"><span class="case-meta-label">Tribunal</span><span class="case-meta-val">Hon. Mrs. Richard, Presiding</span></div>
     </div>
@@ -1152,7 +1150,7 @@ body{
 
     <div class="signature-block">
       <div>
-        <div class="signature-line">[Your Name]</div>
+        <div class="signature-line">The Prosecution</div>
         <div class="signature">Counsel for the Prosecution</div>
       </div>
       <div>
@@ -1346,7 +1344,7 @@ body{
     <section class="slide slide-end">
       <div class="slide-end-stamp">— THE COURT IS ADJOURNED —</div>
       <h2 class="slide-end-h">Thank You.</h2>
-      <div class="slide-end-meta">PROSECUTED BY [YOUR NAME] · ENGLISH IV · MRS. RICHARD</div>
+      <div class="slide-end-meta">PROSECUTED BY WESTYN ARDOIN · ELI KENNEDY · PAYTON LANGLEY · AYDEN FONTENOT · ENGLISH IV · MRS. RICHARD</div>
     </section>
 
   </div>
@@ -1431,10 +1429,37 @@ function normalizeForSpeech(word) {
     .replace(/\bCh\b/gi, 'Chapter')
     .replace(/\bChs\b/gi, 'Chapters')
     .replace(/\bEXHIBIT\b/g, 'Exhibit')
-    .replace(/\bvs\b/gi, 'versus');
+    .replace(/\bvs\b/gi, 'versus')
+    // Honorifics — read as words, not letter-by-letter
+    .replace(/\bMrs\b/g, 'Misses')
+    .replace(/\bMr\b/g, 'Mister')
+    .replace(/\bMs\b/g, 'Miss')
+    .replace(/\bDr\b/g, 'Doctor')
+    .replace(/\bHon\b/g, 'Honorable')
+    .replace(/\bSt\b/g, 'Saint');
+
+  // Years 1100–2099 — read as paired groups ("eighteen eighteen") instead of
+  // long-form ("one thousand eight hundred eighteen").
+  w = w.replace(/\b(1[1-9]|20)(\d{2})\b/g, (_, hi, lo) => {
+    return numberPairToWords(parseInt(hi,10)) + ' ' + numberPairToWords(parseInt(lo,10));
+  });
+
   // Range with en-dash/hyphen between numbers
   w = w.replace(/(\d+)[\u2013\-](\d+)/g, '$1 through $2');
   return w;
+}
+
+const _LOW = ['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const _TENS = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+function numberPairToWords(n) {
+  if (n < 0) return String(n);
+  if (n < 20) return _LOW[n];
+  if (n < 100) {
+    const t = Math.floor(n / 10);
+    const r = n % 10;
+    return _TENS[t] + (r ? ' ' + _LOW[r] : '');
+  }
+  return String(n);
 }
 
 function prepareSlideForReadAlong(slide) {
