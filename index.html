@@ -1031,6 +1031,15 @@ body{
   opacity:0;
 }
 .slide.active .slide-end-h{animation:fadeInUp 1.5s .4s forwards}
+.slide-end-meta{
+  font-family:'Cinzel',serif;
+  font-size:clamp(11px,1.2vw,14px);
+  letter-spacing:5px;
+  color:rgba(232,200,120,.6);
+  margin-top:14px;
+  opacity:0;
+}
+.slide.active .slide-end-meta{animation:fadeIn 1.2s 1.4s forwards}
 
 /* Generic animations */
 @keyframes fadeIn{to{opacity:1}}
@@ -1337,6 +1346,7 @@ body{
     <section class="slide slide-end">
       <div class="slide-end-stamp">— THE COURT IS ADJOURNED —</div>
       <h2 class="slide-end-h">Thank You.</h2>
+      <div class="slide-end-meta">PROSECUTED BY [YOUR NAME] · ENGLISH IV · MRS. RICHARD</div>
     </section>
 
   </div>
@@ -1411,7 +1421,8 @@ const READABLE_SELECTOR = [
   '.verdict-stamp',
   '.verdict-rationale',
   '.slide-end-stamp',
-  '.slide-end-h'
+  '.slide-end-h',
+  '.slide-end-meta'
 ].join(',');
 
 /* Number/abbreviation normalizer for spoken text */
