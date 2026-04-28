@@ -962,41 +962,51 @@ body{
 
 /* EVIDENCE slides */
 .slide-evidence{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:48px;
+  display:flex;
+  flex-direction:column;
   align-items:center;
+  text-align:center;
   padding:60px clamp(40px,7vw,100px);
+  gap:32px;
 }
 .evidence-tag{
   font-family:'Cinzel',serif;
   font-weight:900;
   text-align:center;
   border:3px solid var(--red-stamp);
-  padding:24px 18px;
+  padding:18px 22px;
   color:var(--red-stamp);
   background:rgba(168,37,37,.05);
-  width:140px;
+  width:130px;
   flex-shrink:0;
   opacity:0;
   transform:rotate(-5deg) scale(.5);
+  /* Tag now sits at the BOTTOM center of the slide, after the body */
+  order:2;
 }
-.slide.active .evidence-tag{animation:stampSlam 1s .3s forwards}
+.slide.active .evidence-tag{animation:stampSlam 1s 1.7s forwards}
 @keyframes stampSlam{
   0%{opacity:0;transform:rotate(-15deg) scale(2)}
   60%{opacity:1;transform:rotate(-3deg) scale(.95)}
   100%{opacity:.95;transform:rotate(-3deg) scale(1)}
 }
 .evidence-tag-label{font-size:9px;letter-spacing:3px;margin-bottom:6px}
-.evidence-tag-letter{font-family:'UnifrakturMaguntia',serif;font-size:64px;line-height:.85;margin:8px 0}
+.evidence-tag-letter{font-family:'UnifrakturMaguntia',serif;font-size:54px;line-height:.85;margin:6px 0}
 .evidence-tag-num{font-size:11px;letter-spacing:2px;font-family:'Special Elite',monospace}
-.evidence-body{flex:1}
+.evidence-body{
+  width:100%;
+  max-width:920px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  order:1;
+}
 .evidence-chapter{
   font-family:'Cinzel',serif;
   font-size:11px;
   letter-spacing:6px;
   color:var(--gold);
-  margin-bottom:8px;
+  margin-bottom:10px;
   opacity:0;
 }
 .slide.active .evidence-chapter{animation:fadeIn 1s .5s forwards}
@@ -1006,6 +1016,7 @@ body{
   color:#f3e8d2;
   line-height:1.05;
   margin-bottom:22px;
+  text-align:center;
   opacity:0;
 }
 .slide.active .evidence-h{animation:fadeInUp 1.2s .7s forwards}
@@ -1015,25 +1026,29 @@ body{
   font-style:italic;
   color:#e8c878;
   border-left:3px solid var(--red-stamp);
-  padding:16px 0 16px 24px;
-  margin-bottom:8px;
+  padding:14px 0 14px 24px;
+  margin:0 auto 8px;
   line-height:1.55;
+  text-align:left;
+  max-width:780px;
   opacity:0;
 }
 .slide.active .evidence-quote{animation:fadeInUp 1s 1.1s forwards}
 
-/* Speaker attribution next to each quote — visible but NOT narrated */
+/* Speaker attribution — sits below the quote, centered under it */
 .quote-attribution{
   font-family:'Cinzel',serif;
   font-size:clamp(10px,1vw,12px);
   letter-spacing:3px;
   text-transform:uppercase;
   color:rgba(232,200,120,.55);
-  margin-bottom:20px;
+  margin:0 auto 22px;
+  max-width:780px;
   padding-left:24px;
   display:flex;
   align-items:center;
   gap:8px;
+  text-align:left;
   opacity:0;
 }
 .quote-attribution::before{
@@ -1051,7 +1066,9 @@ body{
   font-size:clamp(14px,1.4vw,18px);
   color:rgba(243,232,210,.88);
   line-height:1.65;
-  max-width:740px;
+  max-width:780px;
+  margin:0 auto;
+  text-align:center;
   opacity:0;
 }
 .slide.active .evidence-explanation{animation:fadeInUp 1s 1.5s forwards}
@@ -1381,10 +1398,10 @@ body.manual-mode .slide-hero-h{
 /* When a slide has a top-centered logo, give it some headroom */
 .slide.has-logo{padding-top:180px}
 .slide.has-logo:not(.slide-evidence){justify-content:flex-start}
-.slide-evidence.has-logo{align-items:start;padding-top:170px}
+.slide-evidence.has-logo{padding-top:170px;gap:24px}
 @media (max-width:560px){
   .slide.has-logo{padding-top:140px}
-  .slide-evidence.has-logo{padding-top:130px}
+  .slide-evidence.has-logo{padding-top:130px;gap:18px}
 }
 
 /* ════════════════════════════════════════════════════════════
