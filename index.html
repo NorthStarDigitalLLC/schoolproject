@@ -54,18 +54,28 @@ body{
   animation:bootFade 1.2s 2.8s cubic-bezier(.4,0,.2,1) forwards;
 }
 .boot-seal{
-  width:72px;height:72px;
+  width:88px;height:88px;
   border-radius:50%;
   border:2px solid var(--gold);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:'UnifrakturMaguntia',serif;
-  font-size:42px;
-  color:var(--red-stamp);
+  overflow:hidden;
+  position:relative;
   opacity:0;
-  animation:fadeIn .6s .2s forwards;
-  box-shadow:0 0 30px rgba(232,200,120,.2);
+  animation:fadeIn .6s .2s forwards, sealPulse 3s ease-in-out 1.2s infinite;
+  box-shadow:0 0 30px rgba(232,200,120,.25), inset 0 0 20px rgba(0,0,0,.5);
+  background:rgba(20,12,8,.6);
+}
+.boot-seal img{
+  width:88%;
+  height:88%;
+  object-fit:contain;
+  filter:drop-shadow(0 0 8px rgba(232,200,120,.3));
+}
+@keyframes sealPulse{
+  0%,100%{box-shadow:0 0 30px rgba(232,200,120,.25), inset 0 0 20px rgba(0,0,0,.5)}
+  50%{box-shadow:0 0 50px rgba(232,200,120,.5), inset 0 0 20px rgba(0,0,0,.5)}
 }
 .boot-line{
   font-family:'Special Elite',monospace;
@@ -804,6 +814,33 @@ body{
 
 /* HERO / opening slide */
 .slide-hero{align-items:center;text-align:center}
+.slide-hero-emblem{
+  width:clamp(70px,7vw,110px);
+  height:clamp(70px,7vw,110px);
+  margin:0 auto 22px;
+  border-radius:50%;
+  background:rgba(20,12,8,.6);
+  border:2px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-shadow:0 0 30px rgba(232,200,120,.3), inset 0 0 20px rgba(0,0,0,.5);
+  opacity:0;
+  transform:scale(.5);
+}
+.slide-hero-emblem img{
+  width:88%;
+  height:88%;
+  object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(232,200,120,.4));
+}
+.slide.active .slide-hero-emblem{animation:emblemReveal 1.2s cubic-bezier(.5,1.5,.5,1) .2s forwards}
+@keyframes emblemReveal{
+  0%{opacity:0;transform:scale(.4) rotate(-10deg)}
+  60%{opacity:1;transform:scale(1.08) rotate(0deg)}
+  100%{opacity:1;transform:scale(1) rotate(0deg)}
+}
 .slide-hero-eyebrow{
   font-family:'Cinzel',serif;
   font-size:13px;
@@ -1139,6 +1176,27 @@ body{
 
 /* VERDICT slide */
 .slide-verdict{align-items:center;justify-content:center;text-align:center}
+.verdict-emblem{
+  width:54px;
+  height:54px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:rgba(20,12,8,.6);
+  border:1.5px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-shadow:0 0 20px rgba(232,200,120,.25), inset 0 0 12px rgba(0,0,0,.4);
+  opacity:0;
+}
+.verdict-emblem img{
+  width:88%;
+  height:88%;
+  object-fit:contain;
+  filter:drop-shadow(0 0 4px rgba(232,200,120,.4)) saturate(.85);
+}
+.slide.active .verdict-emblem{animation:fadeInDown 1s .15s forwards}
 .verdict-court{
   font-family:'Cinzel',serif;
   font-size:11px;
@@ -1200,6 +1258,27 @@ body{
 
 /* END slide */
 .slide-end{align-items:center;text-align:center}
+.slide-end-emblem{
+  width:clamp(64px,6vw,90px);
+  height:clamp(64px,6vw,90px);
+  margin:0 auto 20px;
+  border-radius:50%;
+  background:rgba(20,12,8,.6);
+  border:2px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-shadow:0 0 24px rgba(232,200,120,.25), inset 0 0 16px rgba(0,0,0,.5);
+  opacity:0;
+}
+.slide-end-emblem img{
+  width:88%;
+  height:88%;
+  object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(232,200,120,.35));
+}
+.slide.active .slide-end-emblem{animation:fadeInDown 1.2s .2s forwards}
 .slide-end-stamp{
   font-family:'Special Elite',monospace;
   font-size:14px;
@@ -1306,7 +1385,7 @@ body.manual-mode .slide-hero-h{
 
 <!-- BOOT OVERLAY -->
 <div class="boot" id="bootOverlay">
-  <div class="boot-seal">§</div>
+  <div class="boot-seal"><img src="images/FrankensteinLogo.png" alt="" aria-hidden="true"></div>
   <div class="boot-line l1">CASE FILE OPENING…</div>
   <div class="boot-line l2">FILE NO. 1818-VFM</div>
 </div>
@@ -1426,6 +1505,7 @@ body.manual-mode .slide-hero-h{
 
     <!-- 1. HERO / opening -->
     <section class="slide slide-hero">
+      <div class="slide-hero-emblem"><img src="images/FrankensteinLogo.png" alt="" aria-hidden="true"></div>
       <div class="slide-hero-eyebrow">COURT OF MORAL JUSTICE · 1818</div>
       <h1 class="slide-hero-h">The Trial of<br>Victor Frankenstein</h1>
       <p class="slide-hero-claim">Victor Frankenstein is guilty because he created life and then abandoned it. His neglect directly caused the Creature's suffering and the deaths that followed.</p>
@@ -1557,6 +1637,7 @@ body.manual-mode .slide-hero-h{
 
     <!-- 11. VERDICT -->
     <section class="slide slide-verdict">
+      <div class="verdict-emblem"><img src="images/FrankensteinLogo.png" alt="" aria-hidden="true"></div>
       <div class="verdict-court">THE COURT OF MORAL JUSTICE FINDS</div>
       <div class="verdict-finds">The defendant, Victor Frankenstein —</div>
       <div class="verdict-stamp">GUILTY</div>
@@ -1565,6 +1646,7 @@ body.manual-mode .slide-hero-h{
 
     <!-- 12. END -->
     <section class="slide slide-end">
+      <div class="slide-end-emblem"><img src="images/FrankensteinLogo.png" alt="" aria-hidden="true"></div>
       <div class="slide-end-stamp">— THE COURT IS ADJOURNED —</div>
       <h2 class="slide-end-h">Thank You.</h2>
       <div class="slide-end-meta">PROSECUTED BY WESTYN ARDOIN · ELI KENNEDY · PAYTON LANGLEY · AYDEN FONTENOT · ENGLISH IV · MRS. RICHARD</div>
