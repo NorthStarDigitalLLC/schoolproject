@@ -2275,11 +2275,31 @@ $('#stage').addEventListener('click', (e) => {
 /* ─── Trial start/end ─── */
 /* ════════════════════════════════════════════════════════════
    PRE-RECORDED AUDIO (ElevenLabs voice clone)
-   Plays during manual mode. Falls back to browser speech in auto mode.
+   Plays during AUTO mode. Manual mode stays silent.
    ═══════════════════════════════════════════════════════════ */
 let recordedAudio = null;
 let useRecordedAudio = false;
 let audioStatus = 'not loaded';
+
+/* Timestamps (in seconds) where each slide should start in the audio.
+   Computed from the script word counts × actual audio duration.
+   Total audio: ~463s (7m 43s). */
+const SLIDE_START_TIMES = [
+  0,       // 1. Hero
+  20.5,    // 2. Charges
+  36.8,    // 3. Context
+  61.4,    // 4. Evidence A
+  85.9,    // 5. Evidence B
+  106.3,   // 6. Evidence C
+  128.8,   // 7. Evidence D
+  161.6,   // 8. Evidence E
+  194.3,   // 9. Cross-text Connections
+  263.8,   // 10. Defense
+  335.4,   // 11. Prosecution
+  417.2,   // 12. Closing
+  443.8,   // 13. Verdict
+  452.8    // 14. End
+];
 
 function showAudioStatus(msg, isError) {
   audioStatus = msg;
@@ -2324,6 +2344,31 @@ function setupRecordedAudio() {
   });
   recordedAudio.addEventListener('stalled', () => {
     showAudioStatus('Audio stalled while loading...', true);
+  });
+
+  // ─── Sync slides to audio playback position ───
+  // The audio is the master clock. As it plays, we check currentTime and
+  // switch slides at the right timestamps. This stays perfectly in sync
+  // even if the user pauses, seeks, or the audio drifts.
+  recordedAudio.addEventListener('timeupdate', () => {
+    if (!presentationActive || !useRecordedAudio || paused) return;
+    const t = recordedAudio.currentTime;
+    // Find which slide we should be on based on current audio time
+    let targetSlide = 0;
+    for (let i = SLIDE_START_TIMES.length - 1; i >= 0; i--) {
+      if (t >= SLIDE_START_TIMES[i]) { targetSlide = i; break; }
+    }
+    if (targetSlide !== currentSlide) {
+      // Audio has advanced past the next slide's start time — sync up
+      showSlide(targetSlide);
+    }
+  });
+
+  // When audio ends, ensure we land on the final slide
+  recordedAudio.addEventListener('ended', () => {
+    if (presentationActive && useRecordedAudio && currentSlide < slides.length - 1) {
+      showSlide(slides.length - 1);
+    }
   });
 }
 
@@ -2384,8 +2429,9 @@ function startTrial() {
   // Toggle manual-mode class for cleaner readable fonts
   document.body.classList.toggle('manual-mode', manualMode);
 
-  // In manual mode, attempt to play the pre-recorded narration
-  if (manualMode) {
+  // Use the pre-recorded audio in AUTO mode (cinematic full experience).
+  // Manual mode stays silent so the presenter can speak themselves.
+  if (!manualMode) {
     useRecordedAudio = true;
     setupRecordedAudio();
   } else {
@@ -2400,7 +2446,7 @@ function startTrial() {
     setTimeout(() => {
       showSlide(0);
       // Start the recorded audio after the first slide is on screen
-      if (manualMode && useRecordedAudio) {
+      if (useRecordedAudio) {
         setTimeout(() => playRecordedAudio(), 300);
       }
     }, 200);
@@ -2468,10 +2514,23 @@ function showSlide(idx) {
 }
 
 function next() {
-  if (currentSlide < slides.length - 1) showSlide(currentSlide + 1);
+  if (currentSlide < slides.length - 1) {
+    const target = currentSlide + 1;
+    showSlide(target);
+    // If recorded audio is playing, seek it to the new slide's timestamp
+    if (useRecordedAudio && recordedAudio && SLIDE_START_TIMES[target] !== undefined) {
+      try { recordedAudio.currentTime = SLIDE_START_TIMES[target]; } catch (e) {}
+    }
+  }
 }
 function prev() {
-  if (currentSlide > 0) showSlide(currentSlide - 1);
+  if (currentSlide > 0) {
+    const target = currentSlide - 1;
+    showSlide(target);
+    if (useRecordedAudio && recordedAudio && SLIDE_START_TIMES[target] !== undefined) {
+      try { recordedAudio.currentTime = SLIDE_START_TIMES[target]; } catch (e) {}
+    }
+  }
 }
 
 /* ─── Slide auto-advance ─── */
@@ -2487,7 +2546,8 @@ function scheduleNextAdvance() {
   clearInterval(speechPoll); speechPoll = null;
 
   if (paused) return;
-  if (manualMode) return;  // manual mode: never auto-advance
+  if (manualMode) return;
+  if (useRecordedAudio) return;  // audio's timeupdate event handles advances
   if (currentSlide >= slides.length - 1) return;
 
   const slideStartedAt = Date.now();
