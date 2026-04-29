@@ -2278,6 +2278,74 @@ $('#stage').addEventListener('click', (e) => {
 
 /* ─── Trial start/end ─── */
 /* ════════════════════════════════════════════════════════════
+   CALIBRATION MODE
+   Press 'c' on the case file to start a calibration run. While in
+   calibration: press SPACE when each slide's narration ends. The system
+   captures the audio's currentTime and shows you the resulting array.
+   ═══════════════════════════════════════════════════════════ */
+let calibrating = false;
+let calibrationMarks = [];
+
+function showCalibrationOverlay() {
+  let el = document.getElementById('calibrationOverlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'calibrationOverlay';
+    el.style.cssText = 'position:fixed;top:8px;right:8px;background:rgba(20,12,8,.95);color:#e8c878;padding:14px 18px;font-family:monospace;font-size:12px;border:2px solid #a82525;border-radius:6px;z-index:9999;max-width:380px;line-height:1.5;';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+
+function updateCalibrationDisplay() {
+  const el = showCalibrationOverlay();
+  const t = recordedAudio ? recordedAudio.currentTime.toFixed(2) : '0';
+  let html = '<b style="color:#ff8888">CALIBRATION MODE</b><br>';
+  html += 'Press SPACE when each slide\'s narration ends.<br>';
+  html += 'Audio time: <b>' + t + 's</b><br>';
+  html += 'Marks captured: ' + calibrationMarks.length + ' / 13<br><br>';
+  if (calibrationMarks.length > 0) {
+    html += 'Timestamps so far:<br>';
+    html += '<code style="font-size:11px">[0, ' + calibrationMarks.map(n => n.toFixed(1)).join(', ') + ']</code>';
+  }
+  if (calibrationMarks.length >= 13) {
+    html += '<br><br><b style="color:#88ff88">DONE! Copy the array above and send it.</b>';
+  }
+  el.innerHTML = html;
+}
+
+document.addEventListener('keydown', (e) => {
+  // Toggle calibration mode with 'c' (only on facade screen, before trial starts)
+  if (!presentationActive && e.key.toLowerCase() === 'c' && !e.target.matches('input,textarea')) {
+    calibrating = !calibrating;
+    if (calibrating) {
+      calibrationMarks = [];
+      const el = showCalibrationOverlay();
+      el.innerHTML = '<b style="color:#88ff88">CALIBRATION ARMED</b><br>Triple-click the gavel to begin.<br>Press SPACE when each slide\'s narration ends.';
+    } else {
+      const el = document.getElementById('calibrationOverlay');
+      if (el) el.remove();
+    }
+    return;
+  }
+  // Capture spacebar marks during a calibration trial
+  if (calibrating && presentationActive && e.code === 'Space') {
+    e.preventDefault();
+    if (recordedAudio && calibrationMarks.length < 13) {
+      calibrationMarks.push(recordedAudio.currentTime);
+      updateCalibrationDisplay();
+    }
+  }
+});
+
+/* Update calibration display as audio plays */
+setInterval(() => {
+  if (calibrating && presentationActive && recordedAudio) {
+    updateCalibrationDisplay();
+  }
+}, 200);
+
+/* ════════════════════════════════════════════════════════════
    PRE-RECORDED AUDIO (ElevenLabs voice clone)
    Plays during AUTO mode. Manual mode stays silent.
    ═══════════════════════════════════════════════════════════ */
@@ -2286,23 +2354,23 @@ let useRecordedAudio = false;
 let audioStatus = 'not loaded';
 
 /* Timestamps (in seconds) where each slide should start in the audio.
-   Computed from the script word counts × actual audio duration.
-   Total audio: ~463s (7m 43s). */
+   Extracted from the actual recorded audio file by detecting silence gaps
+   between slide narrations. Total audio: ~463s (7m 43s). */
 const SLIDE_START_TIMES = [
-  0,       // 1. Hero
-  20.5,    // 2. Charges
-  36.8,    // 3. Context
-  61.4,    // 4. Evidence A
-  85.9,    // 5. Evidence B
-  106.3,   // 6. Evidence C
-  128.8,   // 7. Evidence D
-  161.6,   // 8. Evidence E
-  194.3,   // 9. Cross-text Connections
-  263.8,   // 10. Defense
-  335.4,   // 11. Prosecution
-  417.2,   // 12. Closing
-  443.8,   // 13. Verdict
-  452.8    // 14. End
+  0,        // 1. Hero
+  17.33,    // 2. Charges
+  33.08,    // 3. Context
+  54.16,    // 4. Evidence A
+  75.22,    // 5. Evidence B
+  99.01,    // 6. Evidence C
+  123.23,   // 7. Evidence D
+  154.98,   // 8. Evidence E
+  183.16,   // 9. Cross-text Connections
+  249.66,   // 10. Defense
+  322.67,   // 11. Prosecution
+  414.88,   // 12. Closing
+  442.54,   // 13. Verdict
+  454.14    // 14. End
 ];
 
 function showAudioStatus(msg, isError) {
@@ -2449,9 +2517,11 @@ function startTrial() {
     $('#stage').classList.add('active');
     setTimeout(() => {
       showSlide(0);
-      // Start the recorded audio after the first slide is on screen
+      // Start the recorded audio AT THE EXACT SAME MOMENT slide 1 appears.
+      // No additional delay - slide 1's word highlighting needs to start
+      // when audio is at 0 seconds.
       if (useRecordedAudio) {
-        setTimeout(() => playRecordedAudio(), 300);
+        playRecordedAudio();
       }
     }, 200);
   }, 1100);
