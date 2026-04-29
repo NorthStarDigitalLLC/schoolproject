@@ -2820,12 +2820,38 @@ function runFallbackHighlight(slide, words) {
     const slideDurationMs = (slideEnd - slideStart) * 1000;
     if (slideDurationMs <= 0) return;
 
-    // Use a tight interval that recomputes the right word every tick from
-    // the audio clock. This way the highlight always tracks the audio,
-    // even if the audio drifts, the user pauses, or the user seeks.
-    const TICK_MS = 80;
+    /* Per-slide pacing offsets (in seconds). Some slides have audio content
+       that ISN'T on screen — like the Charges slide, where audio counts
+       "One... Two... Three..." but the screen only shows 12 words. For those
+       slides, the visible words start LATER in the audio window.
+       slideStartOffset = how much of the slide window passes before visible
+                          word 1 should be highlighted
+       slideEndOffset   = how much extra time at the end (visible words
+                          finish before the audio's narration of this slide does) */
+    const SLIDE_PACING_OFFSETS = [
+      // [startOffsetSec, endOffsetSec]
+      [0.5, 0.8],   // 1. Hero — small startup pause
+      [3.0, 1.0],   // 2. Charges — "stands accused on three counts" before list
+      [1.5, 1.0],   // 3. Context
+      [2.0, 0.8],   // 4. Evidence A — chapter intro before quote
+      [2.0, 0.8],   // 5. Evidence B
+      [2.0, 0.8],   // 6. Evidence C
+      [2.0, 0.8],   // 7. Evidence D
+      [2.0, 0.8],   // 8. Evidence E
+      [1.5, 1.5],   // 9. Connections
+      [2.0, 1.0],   // 10. Defense — "for the defense" intro
+      [2.5, 5.0],   // 11. Prosecution — heavy intro, also extra quote-attribution audio
+      [1.0, 1.0],   // 12. Closing
+      [0.8, 0.8],   // 13. Verdict — "Court finds... Guilty" timing
+      [1.0, 0.5],   // 14. End
+    ];
+    const [startOff, endOff] = SLIDE_PACING_OFFSETS[slideIdx] || [1.0, 1.0];
+    const visibleWordWindowStart = slideStart + startOff;
+    const visibleWordWindowEnd = slideEnd - endOff;
+    const visibleWindow = Math.max(1, visibleWordWindowEnd - visibleWordWindowStart);
+
+    const TICK_MS = 60;
     const interval = setInterval(() => {
-      // Stop ticking if we've moved off this slide or the trial ended
       if (!presentationActive || slides[currentSlide] !== slide) {
         clearInterval(interval);
         return;
@@ -2834,20 +2860,33 @@ function runFallbackHighlight(slide, words) {
       if (!recordedAudio || recordedAudio.paused) return;
 
       const t = recordedAudio.currentTime;
-      const elapsedInSlide = t - slideStart;
-      if (elapsedInSlide < 0) return;
-      // Fraction through the slide (0 to 1)
-      let frac = elapsedInSlide / (slideEnd - slideStart);
-      if (frac > 1) frac = 1;
-      // Which word should be highlighted? Lookahead +1 because audio buffer
-      // plays slightly ahead of where the boundary "happens" in our model.
-      const targetIdx = Math.min(wordCount - 1, Math.floor(frac * wordCount));
+      const elapsedInWindow = t - visibleWordWindowStart;
+
+      // Before the visible-word window starts, no highlight
+      if (elapsedInWindow < 0) return;
+
+      // After the visible-word window, all words are read
+      if (elapsedInWindow >= visibleWindow) {
+        if (slide._lastActiveWord !== wordCount - 1) {
+          highlightWord(slide, wordCount - 1);
+        }
+        return;
+      }
+
+      // Map fraction-through-window → word index. Use Math.round so the
+      // word lights up at the MIDPOINT of its time slot, plus a small
+      // lookahead so you read with the voice rather than behind it.
+      const frac = elapsedInWindow / visibleWindow;
+      const lookaheadFrac = 0.5 / wordCount;  // half a word ahead
+      const targetIdx = Math.min(
+        wordCount - 1,
+        Math.max(0, Math.round((frac + lookaheadFrac) * wordCount - 0.5))
+      );
       if (targetIdx !== slide._lastActiveWord) {
         highlightWord(slide, targetIdx);
       }
     }, TICK_MS);
 
-    // Store the interval so we can clear it if the slide changes early
     slide._highlightInterval = interval;
     return;
   }
