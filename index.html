@@ -1080,6 +1080,114 @@ body{
 }
 .slide.active .evidence-explanation{animation:fadeInUp 1s 1.5s forwards}
 
+/* CROSS-TEXT CONNECTIONS slide */
+.slide-connections{
+  align-items:center;
+  text-align:center;
+  padding:50px clamp(40px,6vw,100px);
+}
+.connections-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:8px;
+  color:var(--gold);
+  margin-bottom:14px;
+  opacity:0;
+}
+.slide.active .connections-eyebrow{animation:fadeIn 1s forwards}
+.connections-h{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(30px,4.2vw,52px);
+  color:#f3e8d2;
+  line-height:1;
+  margin-bottom:18px;
+  opacity:0;
+}
+.slide.active .connections-h{animation:fadeInDown 1.2s .3s forwards}
+.connections-intro{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(15px,1.6vw,20px);
+  font-style:italic;
+  color:rgba(243,232,210,.85);
+  max-width:800px;
+  margin:0 auto 28px;
+  opacity:0;
+}
+.connections-intro em{color:var(--gold-bright)}
+.slide.active .connections-intro{animation:fadeIn 1s .7s forwards}
+
+.connections-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  max-width:1080px;
+  margin:0 auto 28px;
+  width:100%;
+}
+@media (max-width:768px){.connections-grid{grid-template-columns:1fr;gap:16px}}
+
+.connection-card{
+  padding:24px 22px;
+  border:1px solid rgba(160,118,40,.4);
+  background:rgba(20,12,8,.45);
+  text-align:left;
+  position:relative;
+  opacity:0;
+  transform:translateY(30px);
+}
+.slide.active .connection-card:nth-child(1){animation:fadeInUp 1.1s 1s forwards}
+.slide.active .connection-card:nth-child(2){animation:fadeInUp 1.1s 1.4s forwards}
+.connection-tag{
+  display:inline-block;
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--red-stamp);
+  border:1.5px solid var(--red-stamp);
+  padding:4px 12px;
+  margin-bottom:6px;
+  background:rgba(168,37,37,.06);
+}
+.connection-author{
+  font-family:'Special Elite',monospace;
+  font-size:11px;
+  letter-spacing:1px;
+  color:rgba(232,200,120,.6);
+  margin-bottom:14px;
+}
+.connection-h{
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  font-size:clamp(16px,1.7vw,22px);
+  letter-spacing:1.5px;
+  color:#e8c878;
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
+.connection-text{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(14px,1.4vw,18px);
+  line-height:1.6;
+  color:rgba(243,232,210,.92);
+}
+.connection-text strong{color:#fff;font-weight:700}
+
+.connections-conclusion{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(14px,1.5vw,19px);
+  line-height:1.6;
+  color:rgba(243,232,210,.92);
+  max-width:980px;
+  margin:0 auto;
+  padding:18px 24px;
+  border-top:1px dashed rgba(160,118,40,.4);
+  border-bottom:1px dashed rgba(160,118,40,.4);
+  opacity:0;
+}
+.connections-conclusion strong{color:#fff;font-weight:700}
+.slide.active .connections-conclusion{animation:fadeIn 1.2s 2s forwards}
+
 /* DEFENSE / PROSECUTION argument slides */
 .slide-argument{
   align-items:center;
@@ -1346,6 +1454,7 @@ body.manual-mode .slide-context-h,
 body.manual-mode .evidence-h,
 body.manual-mode .slide-counter-h,
 body.manual-mode .argument-h,
+body.manual-mode .connections-h,
 body.manual-mode .verdict-finds,
 body.manual-mode .slide-end-h,
 body.manual-mode .stage-title{
@@ -1601,7 +1710,7 @@ body.manual-mode .slide-hero-h{
     <section class="slide slide-context">
       <div class="slide-context-label">CONTEXT</div>
       <h2 class="slide-context-h">Background of the Case</h2>
-      <p class="slide-context-text">Victor Frankenstein is a scientist who discovers how to create life. After bringing the Creature to life, he is horrified by it and immediately abandons it. The Creature, left alone with no guidance, must learn about the world on its own and is repeatedly rejected by society.</p>
+      <p class="slide-context-text">Victor Frankenstein is a scientist who discovers how to create life. After bringing the Creature to life, he is horrified by it and quickly rejects and abandons responsibility for it. The Creature, left alone with no guidance, must learn about the world on its own and is repeatedly rejected by society.</p>
     </section>
 
     <!-- 4. EVIDENCE A -->
@@ -1616,7 +1725,7 @@ body.manual-mode .slide-hero-h{
         <h3 class="evidence-h">Victor abandons his creation.</h3>
         <blockquote class="evidence-quote">The beauty of the dream vanished, and breathless horror and disgust filled my heart.</blockquote>
         <div class="quote-attribution">Victor Frankenstein</div>
-        <p class="evidence-explanation">Victor does not just feel fear — he abandons his responsibility immediately. This moment proves that he fails as a creator at the very beginning, setting the entire conflict into motion.</p>
+        <p class="evidence-explanation">Victor does not just feel fear — he abandons his responsibility almost immediately. This moment proves that he fails as a creator at the very beginning, setting the entire conflict into motion.</p>
       </div>
     </section>
 
@@ -1664,7 +1773,7 @@ body.manual-mode .slide-hero-h{
         <h3 class="evidence-h">Victor refuses responsibility again.</h3>
         <blockquote class="evidence-quote">Shall I create another like yourself?</blockquote>
         <div class="quote-attribution">Victor Frankenstein</div>
-        <p class="evidence-explanation">Victor understands the consequences of his actions but still chooses to destroy the second creature. This shows that he knowingly refuses responsibility, making him more accountable for what happens next.</p>
+        <p class="evidence-explanation">Victor destroys the second creature partly out of fear of the consequences. This very fear shows he understands what his choices can cause — yet he still refuses to repair his original mistake. By choosing fear over responsibility, he leaves the existing Creature to suffer alone, which the prosecution argues makes him accountable for what follows.</p>
       </div>
     </section>
 
@@ -1680,11 +1789,36 @@ body.manual-mode .slide-hero-h{
         <h3 class="evidence-h">The results of Victor's actions.</h3>
         <blockquote class="evidence-quote">You are my creator, but I am your master; obey!</blockquote>
         <div class="quote-attribution">The Creature</div>
-        <p class="evidence-explanation">These deaths are not random acts of violence. They are the direct result of the Creature's suffering, which was caused by Victor's abandonment and rejection. This shows a clear chain of cause and effect.</p>
+        <p class="evidence-explanation">In this moment, the Creature claims power over his creator — an inversion that becomes the foundation of the violence to come. The deaths of William, Clerval, and Elizabeth are not random acts. They follow from the suffering Victor's abandonment and rejection caused. The prosecution argues this reveals a clear chain of cause and effect.</p>
       </div>
     </section>
 
-    <!-- 9. DEFENSE ARGUMENT -->
+    <!-- 9. CROSS-TEXT CONNECTIONS -->
+    <section class="slide slide-connections">
+      <div class="connections-eyebrow">CROSS-TEXT CONNECTIONS</div>
+      <h2 class="connections-h">Identity Is Shaped by Environment</h2>
+      <p class="connections-intro">The idea that identity is shaped by external forces is not unique to <em>Frankenstein</em>.</p>
+
+      <div class="connections-grid">
+        <div class="connection-card">
+          <div class="connection-tag">EDUCATED</div>
+          <div class="connection-author">Tara Westover</div>
+          <h3 class="connection-h">Shaped by Isolation</h3>
+          <p class="connection-text">Like the Creature, Tara is shaped by her environment and upbringing. She grows up in isolation without education or outside influence. Her identity is shaped by neglect and control from her father — but unlike the Creature, she is eventually able to <strong>break free through education</strong>. This shows that environment shapes identity powerfully, but the path out depends on the support a person is given.</p>
+        </div>
+
+        <div class="connection-card">
+          <div class="connection-tag">1984</div>
+          <div class="connection-author">George Orwell</div>
+          <h3 class="connection-h">Shaped by Power</h3>
+          <p class="connection-text">Like the Creature, Winston is shaped and controlled by external forces. The Party manipulates his beliefs, controls truth, and dictates reality. Winston <strong>tries to resist, but the Party's power ultimately reshapes him</strong>. This shows how environment and power structures can overwhelm even those who fight back — just as the Creature is shaped by Victor and society.</p>
+        </div>
+      </div>
+
+      <p class="connections-conclusion">Across all three texts, individuals do not develop in isolation — they are influenced by their environment. This strengthens the argument that <strong>Victor is responsible, because he created the conditions that shaped the Creature's actions.</strong></p>
+    </section>
+
+    <!-- 10. DEFENSE ARGUMENT -->
     <section class="slide slide-argument slide-defense">
       <div class="argument-eyebrow">FOR THE DEFENSE</div>
       <h2 class="argument-h">The Defense Argues</h2>
@@ -1692,18 +1826,20 @@ body.manual-mode .slide-hero-h{
         <p class="argument-text">The defense argues that the Creature is responsible for his own actions because he demonstrates clear intelligence, moral awareness, and the ability to make choices. Throughout the novel, the Creature learns language, reads books, and understands human emotions and morality. This shows that he knows the difference between right and wrong.</p>
         <p class="argument-text">Despite this understanding, he chooses violence. After being rejected, he does not seek peaceful solutions but instead turns to revenge. He deliberately murders William, frames Justine, and later kills Clerval and Elizabeth. These are not accidental actions — they are planned and intentional.</p>
         <p class="argument-text">Additionally, the Creature himself admits control over his actions when he tells Victor, <em>"I will be with you on your wedding-night."</em> This shows premeditation and awareness. Because he knowingly chooses revenge, the defense argues that responsibility lies with the Creature, not Victor.</p>
+        <p class="argument-text">This same principle appears in <em>Educated</em> and <em>1984</em>: Tara eventually chooses to leave and educate herself, and Winston attempts to resist the Party. Both show that individuals can <strong>make choices despite their environment</strong>. The Creature, like them, had the ability to choose — meaning responsibility may still lie with him.</p>
       </div>
     </section>
 
-    <!-- 10. PROSECUTION REBUTTAL -->
+    <!-- 11. PROSECUTION REBUTTAL -->
     <section class="slide slide-argument slide-prosecution">
       <div class="argument-eyebrow prosecution">FOR THE PROSECUTION</div>
       <h2 class="argument-h">The Prosecution Responds</h2>
       <div class="argument-body">
         <p class="argument-text"><strong>Victor Frankenstein is responsible</strong> because he created life and failed to take responsibility for it, directly causing the Creature's suffering and actions.</p>
         <p class="argument-text">The Creature was not born violent. He states, <em>"I was benevolent and good; misery made me a fiend."</em> This proves his nature was originally kind. His transformation into violence is the result of his experiences, not his creation.</p>
-        <p class="argument-text">Victor abandons the Creature immediately after bringing it to life, feeling <em>"horror and disgust."</em> Instead of guiding or teaching his creation, he leaves it alone in a world it does not understand. As the Creature tries to connect with others, he is met with violence — when Felix attacks him, the rejection causes emotional suffering and isolation, which leads to his anger.</p>
-        <p class="argument-text">Victor is given a second chance when the Creature asks for a companion, but he destroys the second creation. He is aware of the consequences, yet still refuses to act responsibly. The deaths that follow are not random — they are the <strong>direct result of Victor's neglect</strong>. This is a clear chain of cause and effect.</p>
+        <p class="argument-text">Victor quickly rejects the Creature and abandons responsibility after bringing it to life, feeling <em>"horror and disgust."</em> Instead of guiding or teaching his creation, he leaves it alone in a world it does not understand. As the Creature tries to connect with others, he is met with violence — when Felix attacks him, the rejection causes emotional suffering and isolation, which leads to his anger.</p>
+        <p class="argument-text">This pattern is not unique to <em>Frankenstein</em>. In <em>Educated</em>, Tara's identity is shaped by isolation and her father's control. In <em>1984</em>, Winston is shaped by the Party. Across all three texts, <strong>individuals are formed by their environment</strong> — proving the Creature's transformation followed a recognizable pattern Victor created.</p>
+        <p class="argument-text">Victor is given a second chance when the Creature asks for a companion, but he destroys the second creation. He is aware of the consequences, yet still refuses to act responsibly. The prosecution argues that the deaths that follow are not random — they are the <strong>result of Victor's neglect</strong>. This is a clear chain of cause and effect.</p>
       </div>
     </section>
 
@@ -1829,6 +1965,14 @@ const READABLE_SELECTOR = [
   '.argument-eyebrow',
   '.argument-h',
   '.argument-text',
+  '.connections-eyebrow',
+  '.connections-h',
+  '.connections-intro',
+  '.connection-tag',
+  '.connection-author',
+  '.connection-h',
+  '.connection-text',
+  '.connections-conclusion',
   '.counter-side-label',
   '.counter-side-text',
   '.counter-vs',
@@ -2012,11 +2156,12 @@ const SLIDE_MIN_DURATIONS = [
   12000,  // 6. evidence C
   12000,  // 7. evidence D
   12000,  // 8. evidence E
-  18000,  // 9. defense (3 paragraphs)
-  20000,  // 10. prosecution (4 paragraphs)
-  13000,  // 11. closing
-  10000,  // 12. verdict
-  6000    // 13. end
+  18000,  // 9. cross-text connections
+  20000,  // 10. defense (4 paragraphs now with cross-text)
+  22000,  // 11. prosecution (5 paragraphs now with cross-text)
+  13000,  // 12. closing
+  10000,  // 13. verdict
+  6000    // 14. end
 ];
 
 const POST_NARRATION_BUFFER = 1800;
@@ -2092,8 +2237,10 @@ $('#btnPause').addEventListener('click', () => {
     clearTimeout(speechStartTimer);
     clearInterval(speechPoll);
     speechSynthesis.pause();
+    pauseRecordedAudio();
   } else {
     speechSynthesis.resume();
+    resumeRecordedAudio();
     scheduleNextAdvance();
   }
 });
@@ -2126,6 +2273,54 @@ $('#stage').addEventListener('click', (e) => {
 });
 
 /* ─── Trial start/end ─── */
+/* ════════════════════════════════════════════════════════════
+   PRE-RECORDED AUDIO (ElevenLabs voice clone)
+   Plays during manual mode. Falls back to browser speech in auto mode.
+   ═══════════════════════════════════════════════════════════ */
+let recordedAudio = null;
+let useRecordedAudio = false;
+
+function setupRecordedAudio() {
+  // Only set up once
+  if (recordedAudio) return;
+  recordedAudio = new Audio('trial-narration.mp3');
+  recordedAudio.preload = 'auto';
+  recordedAudio.volume = 1;
+  // If file exists and loads, we're good. If not, we silently fall back.
+  recordedAudio.addEventListener('error', () => {
+    console.warn('[Trial] Recorded audio not found - using browser speech.');
+    useRecordedAudio = false;
+  });
+}
+
+function playRecordedAudio() {
+  if (!recordedAudio) setupRecordedAudio();
+  if (!recordedAudio) return;
+  try {
+    recordedAudio.currentTime = 0;
+    recordedAudio.play().catch(err => {
+      console.warn('[Trial] Audio play failed:', err);
+    });
+  } catch (e) { console.warn('[Trial] Audio error:', e); }
+}
+
+function pauseRecordedAudio() {
+  if (recordedAudio && !recordedAudio.paused) recordedAudio.pause();
+}
+
+function resumeRecordedAudio() {
+  if (recordedAudio && recordedAudio.paused) {
+    recordedAudio.play().catch(()=>{});
+  }
+}
+
+function stopRecordedAudio() {
+  if (recordedAudio) {
+    recordedAudio.pause();
+    recordedAudio.currentTime = 0;
+  }
+}
+
 function startTrial() {
   presentationActive = true;
 
@@ -2146,12 +2341,26 @@ function startTrial() {
   // Toggle manual-mode class for cleaner readable fonts
   document.body.classList.toggle('manual-mode', manualMode);
 
+  // In manual mode, attempt to play the pre-recorded narration
+  if (manualMode) {
+    useRecordedAudio = true;
+    setupRecordedAudio();
+  } else {
+    useRecordedAudio = false;
+  }
+
   $('#transition').classList.add('show');
 
   setTimeout(() => {
     $('#facade').classList.add('hidden');
     $('#stage').classList.add('active');
-    setTimeout(() => showSlide(0), 200);
+    setTimeout(() => {
+      showSlide(0);
+      // Start the recorded audio after the first slide is on screen
+      if (manualMode && useRecordedAudio) {
+        setTimeout(() => playRecordedAudio(), 300);
+      }
+    }, 200);
   }, 1100);
 
   setTimeout(() => $('#transition').classList.remove('show'), 1500);
@@ -2167,6 +2376,8 @@ function endTrial() {
   clearTimeout(speechStartTimer);
   clearInterval(speechPoll);
   speechSynthesis.cancel();
+  stopRecordedAudio();
+  useRecordedAudio = false;
   $('#stage').classList.remove('active');
   $('#facade').classList.remove('hidden');
   document.body.classList.remove('manual-mode');
@@ -2311,7 +2522,6 @@ if ('speechSynthesis' in window) {
 /* ─── Speak the current slide ─── */
 function narrateCurrent() {
   if (!narrationOn) return;
-  if (!('speechSynthesis' in window)) return;
   const slide = slides[currentSlide];
   if (!slide) return;
 
@@ -2319,6 +2529,15 @@ function narrateCurrent() {
   if (!text) return;
 
   resetSlideHighlights(slide);
+
+  // If we're using the pre-recorded audio (manual mode), don't fire browser
+  // speech. Just run the word-highlight fallback timer based on word count.
+  if (useRecordedAudio) {
+    runFallbackHighlight(slide, words);
+    return;
+  }
+
+  if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
 
   const u = new SpeechSynthesisUtterance(text);
