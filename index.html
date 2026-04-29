@@ -2283,7 +2283,7 @@ let useRecordedAudio = false;
 function setupRecordedAudio() {
   // Only set up once
   if (recordedAudio) return;
-  recordedAudio = new Audio('trial-narration.mp3');
+  recordedAudio = new Audio('audio/trial-narration.mp3');
   recordedAudio.preload = 'auto';
   recordedAudio.volume = 1;
   // If file exists and loads, we're good. If not, we silently fall back.
