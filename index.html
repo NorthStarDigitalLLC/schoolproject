@@ -2279,17 +2279,51 @@ $('#stage').addEventListener('click', (e) => {
    ═══════════════════════════════════════════════════════════ */
 let recordedAudio = null;
 let useRecordedAudio = false;
+let audioStatus = 'not loaded';
+
+function showAudioStatus(msg, isError) {
+  audioStatus = msg;
+  let el = document.getElementById('audioDebug');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'audioDebug';
+    el.style.cssText = 'position:fixed;top:8px;left:8px;background:rgba(20,12,8,.9);color:#e8c878;padding:6px 12px;font-family:monospace;font-size:11px;border:1px solid #a07628;border-radius:4px;z-index:9999;max-width:90vw;';
+    document.body.appendChild(el);
+  }
+  el.style.borderColor = isError ? '#a82525' : '#a07628';
+  el.style.color = isError ? '#ff8888' : '#e8c878';
+  el.textContent = '[AUDIO] ' + msg;
+  // Auto-hide after 8 seconds if it was a success message
+  if (!isError) {
+    setTimeout(() => { if (el && el.textContent === '[AUDIO] ' + msg) el.style.opacity = '.3'; }, 8000);
+  }
+}
 
 function setupRecordedAudio() {
-  // Only set up once
   if (recordedAudio) return;
+  showAudioStatus('Looking for audio/trial-narration.mp3 ...');
   recordedAudio = new Audio('audio/trial-narration.mp3');
   recordedAudio.preload = 'auto';
   recordedAudio.volume = 1;
-  // If file exists and loads, we're good. If not, we silently fall back.
-  recordedAudio.addEventListener('error', () => {
-    console.warn('[Trial] Recorded audio not found - using browser speech.');
+
+  recordedAudio.addEventListener('loadeddata', () => {
+    showAudioStatus('Audio loaded - ready to play (' + Math.round(recordedAudio.duration) + 's)');
+  });
+  recordedAudio.addEventListener('canplaythrough', () => {
+    showAudioStatus('Audio ready to play (' + Math.round(recordedAudio.duration) + 's)');
+  });
+  recordedAudio.addEventListener('playing', () => {
+    showAudioStatus('Audio is PLAYING');
+  });
+  recordedAudio.addEventListener('error', (e) => {
+    const errorCode = recordedAudio.error ? recordedAudio.error.code : '?';
+    const errorMsg = recordedAudio.error ? recordedAudio.error.message : 'unknown';
+    showAudioStatus('FAILED to load audio (code ' + errorCode + '). Check that file is at: audio/trial-narration.mp3', true);
+    console.error('[Trial Audio Error]', errorCode, errorMsg, e);
     useRecordedAudio = false;
+  });
+  recordedAudio.addEventListener('stalled', () => {
+    showAudioStatus('Audio stalled while loading...', true);
   });
 }
 
@@ -2298,10 +2332,19 @@ function playRecordedAudio() {
   if (!recordedAudio) return;
   try {
     recordedAudio.currentTime = 0;
-    recordedAudio.play().catch(err => {
-      console.warn('[Trial] Audio play failed:', err);
-    });
-  } catch (e) { console.warn('[Trial] Audio error:', e); }
+    const playPromise = recordedAudio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => { showAudioStatus('Playing audio...'); })
+        .catch(err => {
+          showAudioStatus('Browser blocked playback: ' + err.message, true);
+          console.error('[Trial Audio Play Error]', err);
+        });
+    }
+  } catch (e) {
+    showAudioStatus('Play error: ' + e.message, true);
+    console.error('[Trial Audio Exception]', e);
+  }
 }
 
 function pauseRecordedAudio() {
