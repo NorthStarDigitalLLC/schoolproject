@@ -2129,6 +2129,10 @@ function highlightWord(slide, idx) {
 }
 
 function resetSlideHighlights(slide) {
+  if (slide._highlightInterval) {
+    clearInterval(slide._highlightInterval);
+    slide._highlightInterval = null;
+  }
   if (!slide._readAlongWords) return;
   slide._readAlongWords.forEach(w => w.classList.remove('rd-active', 'rd-read'));
   slide._lastActiveWord = null;
@@ -2732,6 +2736,53 @@ function narrateCurrent() {
 function runFallbackHighlight(slide, words) {
   const wordCount = words.length;
   if (!wordCount) return;
+
+  // ─── If recorded audio is playing, drive highlighting from audio.currentTime ───
+  // Each slide has a known start time in the audio. Its duration is the gap
+  // until the next slide. We map the audio's elapsed-time-within-this-slide
+  // to the word index proportionally.
+  if (useRecordedAudio && recordedAudio) {
+    const slideIdx = slides.indexOf(slide);
+    const slideStart = SLIDE_START_TIMES[slideIdx];
+    const slideEnd = (slideIdx + 1 < SLIDE_START_TIMES.length)
+      ? SLIDE_START_TIMES[slideIdx + 1]
+      : (recordedAudio.duration || slideStart + wordCount * 0.4);
+    const slideDurationMs = (slideEnd - slideStart) * 1000;
+    if (slideDurationMs <= 0) return;
+
+    // Use a tight interval that recomputes the right word every tick from
+    // the audio clock. This way the highlight always tracks the audio,
+    // even if the audio drifts, the user pauses, or the user seeks.
+    const TICK_MS = 80;
+    const interval = setInterval(() => {
+      // Stop ticking if we've moved off this slide or the trial ended
+      if (!presentationActive || slides[currentSlide] !== slide) {
+        clearInterval(interval);
+        return;
+      }
+      if (paused) return;
+      if (!recordedAudio || recordedAudio.paused) return;
+
+      const t = recordedAudio.currentTime;
+      const elapsedInSlide = t - slideStart;
+      if (elapsedInSlide < 0) return;
+      // Fraction through the slide (0 to 1)
+      let frac = elapsedInSlide / (slideEnd - slideStart);
+      if (frac > 1) frac = 1;
+      // Which word should be highlighted? Lookahead +1 because audio buffer
+      // plays slightly ahead of where the boundary "happens" in our model.
+      const targetIdx = Math.min(wordCount - 1, Math.floor(frac * wordCount));
+      if (targetIdx !== slide._lastActiveWord) {
+        highlightWord(slide, targetIdx);
+      }
+    }, TICK_MS);
+
+    // Store the interval so we can clear it if the slide changes early
+    slide._highlightInterval = interval;
+    return;
+  }
+
+  // ─── Otherwise: legacy fixed-pace fallback (used when no audio file) ───
   const estPerWord = 520;
   let i = 0;
   function tick() {
