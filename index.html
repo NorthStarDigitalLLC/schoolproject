@@ -1520,47 +1520,25 @@ body.manual-mode .slide-hero-h{
 }
 
 /* ════════════════════════════════════════════════════════════
-   READ-ALONG WORD HIGHLIGHTING
+   READ-ALONG WORD HIGHLIGHTING — DISABLED
+   Words are still wrapped in spans behind the scenes so the timing
+   logic still runs, but no visible highlight is shown. The audio
+   provides the narration; viewers just read along naturally.
    ═══════════════════════════════════════════════════════════ */
 .rd-word{
-  display:inline-block;
-  position:relative;
-  transition:color .2s ease, text-shadow .25s ease;
+  display:inline;
+  position:static;
 }
-.rd-word.rd-active{
-  color:#fffde0 !important;
-  text-shadow:0 0 12px rgba(255,253,224,.7), 0 0 24px rgba(232,200,120,.4);
-  animation:wordPop .35s cubic-bezier(.5,1.5,.5,1);
+.rd-word.rd-active,
+.rd-word.rd-read{
+  /* No visual change - keep the word looking exactly like normal text */
+  color:inherit !important;
+  text-shadow:inherit !important;
+  opacity:1 !important;
+  animation:none !important;
 }
 .rd-word.rd-active::after{
-  content:'';
-  position:absolute;
-  left:0;right:0;bottom:-2px;
-  height:2px;
-  background:linear-gradient(90deg, transparent, var(--gold-bright) 30%, #fff5cc 50%, var(--gold-bright) 70%, transparent);
-  border-radius:2px;
-  box-shadow:0 0 8px rgba(232,200,120,.7);
-  animation:underlineSweep .35s cubic-bezier(.22,1,.36,1);
-}
-.rd-word.rd-read{opacity:.55;transition:opacity .4s ease}
-@keyframes wordPop{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.06)}
-  100%{transform:scale(1)}
-}
-@keyframes underlineSweep{
-  from{transform:scaleX(0);transform-origin:left}
-  to{transform:scaleX(1);transform-origin:left}
-}
-.evidence-quote .rd-word.rd-active,
-.slide-close-quote .rd-word.rd-active{
-  color:#fff !important;
-  text-shadow:0 0 16px rgba(255,255,255,.6), 0 0 28px rgba(232,200,120,.5);
-}
-.verdict-stamp.rd-active,
-.verdict-stamp .rd-word.rd-active{
-  color:#ff5050 !important;
-  text-shadow:0 0 24px rgba(255,80,80,.8), 0 0 40px rgba(168,37,37,.6);
+  display:none !important;
 }
 
 </style>
